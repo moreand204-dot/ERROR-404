@@ -2,47 +2,70 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030912">
 <title>ERROR 404 NOT FOUND — متجر التطبيقات</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="index.html"><span class="brand-mark">☠</span><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
-  <nav>
-    <a class="active" href="index.html">الرئيسية</a><a href="#apps">التطبيقات</a><a href="#games">الألعاب</a><a href="#tools">الأدوات</a><a href="#categories">التصنيفات</a>
-  </nav>
-  <div class="top-actions"><button class="icon-btn" id="themeBtn" title="تغيير المظهر">☾</button><a class="icon-btn" href="admin-login.html">◉</a></div>
+<header class="header">
+  <div class="header-inner">
+    <a class="logo" href="#"><img src="assets/logo.png" alt="ERROR 404"><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
+    <button class="mobile-menu" id="menuBtn" aria-label="القائمة">☰</button>
+    <nav id="nav">
+      <a class="active" href="#">الرئيسية</a>
+      <a href="#apps">التطبيقات</a>
+      <a href="#games">الألعاب</a>
+      <a href="#tools">الأدوات</a>
+      <a href="#categories">التصنيفات</a>
+    </nav>
+    <div class="header-actions">
+      <div class="top-search"><input placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
+      <button class="circle" id="themeBtn">☾</button>
+      <a class="circle" href="admin-login.html">♙</a>
+    </div>
+  </div>
 </header>
 
-<main class="shell">
+<main class="container">
 <section class="hero">
-  <div class="hero-copy">
-    <p class="eyebrow">متجر تطبيقات خاص</p>
-    <h1>ERROR <em>404</em><br>NOT FOUND</h1>
-    <p>مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
-    <div class="search"><input placeholder="ابحث عن تطبيق أو لعبة..." id="search"><button>⌕</button></div>
-    <div class="chips"><button>الأكثر تحميلاً</button><button>الأحدث</button><button>الألعاب</button><button>التطبيقات</button><button>الأدوات</button></div>
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <p class="eyebrow">مرحباً بك في متجر</p>
+    <h1>ERROR <span>404</span> NOT FOUND</h1>
+    <p class="hero-text">مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
+    <div class="hero-search"><input id="search" placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
+    <div class="quick"><button>الأكثر تحميلاً</button><button>الأحدث</button><button>الألعاب</button><button>التطبيقات</button><button>الأدوات</button></div>
   </div>
-  <div class="hero-art"><div class="glow"></div><div class="hood">◉</div><strong>ERROR<br><span>404</span></strong></div>
 </section>
 
-<div class="layout">
-<section class="content">
-  <div class="section-head"><h2>أحدث التطبيقات <span>◷</span></h2><a href="#apps">عرض الكل ←</a></div>
-  <div class="apps-grid" id="apps"></div>
+<div class="main-grid">
+<section class="apps-section" id="apps">
+  <div class="section-title"><h2>أحدث التطبيقات <span>◷</span></h2><a href="#">عرض الكل ←</a></div>
+  <div class="apps-grid" id="appsGrid"></div>
 </section>
-<aside>
-  <div class="panel"><h3>التصنيفات</h3>
-    <a>🎮 الألعاب</a><a>▦ التطبيقات</a><a>⌕ أدوات</a><a>◌ تواصل اجتماعي</a><a>▶ ترفيه</a><a>▣ تعديل الصور</a><a>▤ تعليم</a><a>••• أخرى</a>
+
+<aside class="sidebar" id="categories">
+  <div class="side-card">
+    <h3>التصنيفات</h3>
+    <a>🎮 <span>ألعاب</span></a><a>▦ <span>تطبيقات</span></a><a>🔧 <span>أدوات</span></a>
+    <a>◌ <span>تواصل اجتماعي</span></a><a>▶ <span>ترفيه</span></a><a>▣ <span>تعديل الصور</span></a>
+    <a>▤ <span>تعليم</span></a><a>••• <span>أخرى</span></a>
   </div>
-  <div class="panel featured"><h3>تطبيقات مختارة</h3><p>مجموعة خاصة · مميزة</p><button onclick="location.href='app.html'">استكشف الآن</button></div>
-  <div class="panel stats-mini"><h3>إحصائيات المتجر</h3><div><span>▦</span><b>56</b><small>عدد التطبيقات</small></div><div><span>⇩</span><b>1,245,870</b><small>عدد التحميلات</small></div><div><span>♧</span><b>248,632</b><small>عدد الزوار</small></div></div>
+  <div class="side-card featured">
+    <h3>تطبيقات مختارة</h3><p>مجموعة خاصة · مميزة</p><button>استكشف الآن</button>
+  </div>
+  <div class="side-card stats">
+    <h3>إحصائيات المتجر</h3>
+    <div><b>56</b><small>عدد التطبيقات</small></div>
+    <div><b>1,245,870</b><small>عدد التحميلات</small></div>
+    <div><b>248,632</b><small>عدد الزوار</small></div>
+  </div>
 </aside>
 </div>
 </main>
 
-<footer><div>☠ ERROR 404 NOT FOUND<br><small>All rights reserved © 2026</small></div><div class="social">◉　◉　◉　𝕏</div><div>ليس متجرًا رسميًا لأي من التطبيقات ♥</div></footer>
+<footer><div>☠ <b>ERROR 404 NOT FOUND</b><small>All rights reserved © 2026</small></div><div>◉　◉　◉　𝕏</div><div>ليس متجرًا رسميًا لأي من التطبيقات ♥</div></footer>
 <script src="script.js"></script>
 </body>
 </html>

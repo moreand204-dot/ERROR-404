@@ -1,12 +1,5 @@
-ERROR 404 NOT FOUND — Frontend Demo
-========================================
-Open index.html in a browser.
-
-Pages:
-- index.html       Store home
-- app.html         App details
-- admin-login.html Admin login (demo: admin / 404404)
-- admin.html       Admin statistics dashboard
-
-This is frontend-only. Numbers, login, downloads, users and statistics are demo data.
-No real authentication, APK uploads, Google/Gmail analytics, or backend database is connected yet.
+ERROR 404 NOT FOUND — Responsive Frontend
+Open index.html.
+Designed for desktop, tablet and Android/iPhone screens.
+The hero image is assets/hero-404.jpg.
+This is still frontend-only; statistics and login are demo data.
