@@ -3,19 +3,20 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit, doc, setDoc, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
 /*
   ضع بيانات مشروع Firebase هنا من:
   Firebase Console → Project settings → Your apps → Web app
 */
 const firebaseConfig = {
-  apiKey: "AIzaSyCd2lQ6rQFPJRRGReq9pFu0IqqTClNEu3k",
-  authDomain: "love-ece13.firebaseapp.com",
-  projectId: "love-ece13",
-  storageBucket: "love-ece13.firebasestorage.app",
-  messagingSenderId: "629134080131",
-  appId: "1:629134080131:web:ed7984536666d36e0ac3b6",
-  measurementId: "G-BPKRYWDG0T"
+  apiKey: "AIzaSyCypIGW0i3ugYgPLBoQrBm-WolT2Cvkyuo",
+  authDomain: "ourstory-f33db.firebaseapp.com",
+  projectId: "ourstory-f33db",
+  storageBucket: "ourstory-f33db.firebasestorage.app",
+  messagingSenderId: "685629313835",
+  appId: "1:685629313835:web:fb06292932019eabc56b6e",
+  measurementId: "G-9TBR9QFHQR"
 };
 
 const ADMIN_EMAIL = "moreand458@gmail.com";
@@ -80,12 +81,22 @@ try {
   if (!firebaseConfig.apiKey.includes("PUT_")) {
     const app=initializeApp(firebaseConfig);
     auth=getAuth(app);
+    const db=getFirestore(app);
     firebaseReady=true;
-    onAuthStateChanged(auth,user=>{
+    try {
+      await setDoc(doc(db,"stats","global"),{visitors:increment(1),updatedAt:serverTimestamp()},{merge:true});
+      const snap=await getDocs(query(collection(db,"apps"),orderBy("createdAt","desc"),limit(12)));
+      if(!snap.empty){
+        box.innerHTML=[...snap.docs].map(s=>{const a=s.data();return `<article class="app-card"><div class="app-icon" style="background:#087dff18;border:1px solid #0c3157;color:#00b7ff;font-size:22px;font-weight:800">${String(a.name||"A")[0]}</div><h3>${a.name||"تطبيق"}</h3><div class="rating">★ ${a.rating||"4.8"}</div><p>${a.category||"تطبيقات"} · ${a.size||""}</p><button data-app-download="${s.id}">تحميل</button></article>`}).join("");
+        document.querySelectorAll("[data-app-download]").forEach(b=>b.onclick=async()=>{const id=b.dataset.appDownload;window.location.href=`app.html?id=${encodeURIComponent(id)}`;});
+      }
+    } catch(e) { console.warn("Firestore home load:",e); }
+    onAuthStateChanged(auth,async user=>{
       if(user){
+        try { await setDoc(doc(db,"users",user.uid),{email:user.email,name:user.displayName||"",photoURL:user.photoURL||"",lastLogin:serverTimestamp()},{merge:true}); } catch(e) {}
         loginBtn.innerHTML=icons.user;
         loginBtn.title=user.email===ADMIN_EMAIL?"حساب الأدمن":"الحساب";
-        authStatus.innerHTML=`تم تسجيل الدخول: <b>${user.email}</b>${user.email===ADMIN_EMAIL?`<br><span class="admin-badge">${icons.shield} حساب الأدمن</span>`:""}<br><button id="logoutBtn" class="logout-btn">تسجيل الخروج</button>`;
+        authStatus.innerHTML=`تم تسجيل الدخول: <b>${user.email}</b>${user.email===ADMIN_EMAIL?`<br><span class="admin-badge">${icons.shield} حساب الأدمن</span><br><a href="admin.html" class="logout-btn" style="display:inline-block;text-decoration:none">لوحة الأدمن</a>`:""}<br><button id="logoutBtn" class="logout-btn">تسجيل الخروج</button>`;
         const logout=document.querySelector("#logoutBtn");
         if(logout) logout.onclick=()=>signOut(auth);
       } else {

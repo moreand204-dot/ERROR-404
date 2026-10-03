@@ -1,0 +1,14 @@
+ERROR 404 STORE — Google Drive upload
+
+OAuth Client ID:
+660209763876-4aochiriq3vsl5beo1rifqlctemn1dck.apps.googleusercontent.com
+
+Scope:
+https://www.googleapis.com/auth/drive.file
+
+Authorized JavaScript origin:
+https://error-404-tawny.vercel.app
+
+The Client Secret must NOT be put in frontend files, GitHub, or Vercel. This frontend uses Google Identity Services token authorization.
+
+When the admin uploads an APK, the browser requests Drive permission, uploads the APK to Drive, makes the file readable by anyone with the link, then stores the Drive file ID and public download URL in Firestore.

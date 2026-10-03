@@ -1,15 +1,20 @@
-تم ربط الواجهة بمشروع Firebase:
-Project ID: love-ece13
-Auth Domain: love-ece13.firebaseapp.com
+Firebase — ERROR 404 NOT FOUND
 
-الحساب المحدد للأدمن:
-moreand458@gmail.com
+Project ID: ourstory-f33db
+authDomain: ourstory-f33db.firebaseapp.com
 
-لازم من Firebase Console:
-1) Authentication → Sign-in method → فعّل Google.
-2) Authentication → Settings → Authorized domains → أضف دومين موقعك.
-3) شغّل الموقع ثم جرّب زر تسجيل الدخول.
+Web App config:
+apiKey: AI... (موجود داخل ملفات JS للموقع)
+appId: 1:685629313835:web:fb06292932019eabc56b6e
+measurementId: G-9TBR9QFHQR
 
-مهم:
-- Firebase Web API key ليست كلمة مرور سرية، لكن قواعد Firestore/Storage والحماية الفعلية للوحة الأدمن يجب أن تكون على الخادم/قواعد Firebase.
-- النسخة الحالية تجعل البريد المحدد يظهر كحساب Admin في الواجهة؛ حماية لوحة الأدمن الحقيقية بـ Custom Claims/Firestore Rules نضيفها مع لوحة الأدمن.
+المشروع ده منفصل عن Firebase الخاص بموقع البوتات.
+
+المطلوب:
+1) Authentication → Sign-in method → Google → Enable.
+2) Firestore Database → Create database.
+3) Firestore → Rules → انشر firestore.rules.
+4) Authentication → Settings → Authorized domains → أضف دومين المتجر.
+
+Firebase Storage غير مستخدم في نسخة المتجر الحالية.
+ملفات APK تذهب إلى Cloudflare R2 عن طريق Worker.

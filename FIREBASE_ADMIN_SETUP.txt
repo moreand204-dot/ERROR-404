@@ -1,0 +1,18 @@
+إعداد ERROR 404 NOT FOUND — Firebase + Cloudflare R2
+
+1) Firebase Console → Authentication → Sign-in method → Google → Enable.
+2) Firebase Console → Firestore Database → Create database.
+3) Firestore → Rules: استخدم firestore.rules الموجود في المشروع ثم Publish.
+4) Authentication → Settings → Authorized domains: أضف دومين موقعك.
+5) الحساب الإداري الوحيد: moreand458@gmail.com
+
+Cloudflare R2
+1) Cloudflare → R2 → Create bucket باسم error-404-apks.
+2) أنشئ API token بصلاحية Object Read & Write على هذا الـbucket فقط.
+3) داخل مجلد worker عدّل wrangler.toml إذا احتجت اسم bucket مختلف.
+4) ثبّت dependencies ثم انشر Worker.
+5) أضف secrets للـWorker: R2_ACCOUNT_ID وR2_ACCESS_KEY_ID وR2_SECRET_ACCESS_KEY.
+6) بعد نشر Worker، انسخ رابط workers.dev وضعه في admin.js داخل R2_WORKER_URL.
+
+الرفع: الأدمن يسجل الدخول بـGoogle → يختار APK → المتصفح يرفع مباشرة إلى R2 باستخدام رابط مؤقت صادر من Worker → تحفظ بيانات التطبيق والرابط في Firestore.
+لا تضع مفاتيح R2 السرية في ملفات الموقع.
