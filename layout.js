@@ -5,7 +5,7 @@ import {initNotifications} from "./notify.js";
 export function mountHeader({search=false,page=''}={}){
  const el=document.getElementById('siteHeader');el.className='site-header';
  const nav=[['index.html','الرئيسية','','home'],['index.html#appsSection','المتجر','all',''],['index.html?f=popular#appsSection','الأكثر تحميلاً','popular',''],['index.html?f=rating#appsSection','الأعلى تقييماً','rating',''],['index.html?f=fav#appsSection','المفضلة','fav',''],['settings.html','الإعدادات','','settings']];
- el.innerHTML=`<div class="header-inner"><a class="brand" href="index.html"><img src="assets/icon-192.png" alt=""><span id="brandSpan"></span></a>
+ el.innerHTML=`<div class="header-inner"><a class="brand" href="index.html"><img src="assets/icon-96.png" alt="" width="38" height="38"><span id="brandSpan"></span></a>
  <nav class="nav">${nav.map(n=>`<a href="${n[0]}" ${n[2]?`data-f="${n[2]}"`:''} class="${(page==='index'&&n[3]==='home')||(page===n[3]&&n[3]!=='home')?'active':''}">${n[1]}</a>`).join('')}</nav>
  <div class="header-tools">
  ${search?`<div class="search-mini"><input id="mainSearch" placeholder="ابحث عن تطبيق أو ملف..." aria-label="البحث"><button id="miniSearchBtn" aria-label="بحث">${ic('search')}</button></div>`:''}

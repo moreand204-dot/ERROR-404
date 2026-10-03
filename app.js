@@ -1,22 +1,28 @@
-import {doc,onSnapshot,updateDoc,increment,serverTimestamp,collection,query,orderBy,limit,setDoc,deleteDoc,getDoc} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import {doc,onSnapshot,updateDoc,increment,serverTimestamp,collection,query,orderBy,limit,setDoc,deleteDoc,getDoc,getDocs} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 import {db,$,esc,store,onStore,onUser,currentUser,isAdmin,getProfile,avatar,toast,favs,saveFavs,timeAgo,tsMs} from "./core.js";
 import {ic,tile,extOf,kindLabel} from "./icons.js";
 import {mountHeader,mountFooter} from "./layout.js";
 mountHeader({page:'app'});mountFooter();
 const id=new URLSearchParams(location.search).get('id');
 const box=$('#appBox'),rbox=$('#reviewsBox');
-let appData=null,reviews=[],user=null,myReview=null,pickRating=0,formInit=false;
+let shots=[],appData=null,reviews=[],user=null,myReview=null,pickRating=0,formInit=false;
 
+const shotsHTML=()=>shots.length?`<div class="shots-title">لقطات الشاشة</div><div class="shots">${shots.map((d,i)=>`<img src="${esc(d)}" alt="" loading="lazy" decoding="async" data-shot="${i}">`).join('')}</div>`:'';
+document.body.insertAdjacentHTML('beforeend',`<div class="lightbox" id="lb" hidden><button class="lb-close" aria-label="إغلاق">${ic('x')}</button><button class="lb-prev" aria-label="السابق">${ic('arrowR')}</button><img id="lbImg" alt=""><button class="lb-next" aria-label="التالي">${ic('arrowL')}</button></div>`);
+let lbI=0;const lb=$('#lb'),lbShow=i=>{lbI=(i+shots.length)%shots.length;$('#lbImg').src=shots[lbI];lb.hidden=false};
+document.addEventListener('click',e=>{const t=e.target.closest('[data-shot]');if(t){lbShow(+t.dataset.shot);return}if(e.target.closest('.lb-close')||e.target===lb)lb.hidden=true;else if(e.target.closest('.lb-prev'))lbShow(lbI+1);else if(e.target.closest('.lb-next'))lbShow(lbI-1)});
+document.addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')lb.hidden=true;if(e.key==='ArrowLeft')lbShow(lbI-1);if(e.key==='ArrowRight')lbShow(lbI+1)});
 const starRow=(v,cls='')=>[1,2,3,4,5].map(i=>ic('star',(i<=Math.round(v)?'on ':'')+cls)).join('');
 
 if(!id){box.innerHTML='<h1>404</h1><p>الرابط غير صحيح.</p>'}
 else{
+ getDocs(query(collection(db,'apps',id,'shots'),orderBy('order'))).then(sn=>{shots=sn.docs.map(d=>d.data().data).filter(Boolean);const w=$('#shotsWrap');if(w)w.innerHTML=shotsHTML()}).catch(()=>{});
  onSnapshot(doc(db,'apps',id),snap=>{
   if(!snap.exists()){box.innerHTML='<h1>404 NOT FOUND</h1><p>العنصر غير موجود أو تم حذفه.</p>';rbox.hidden=true;return}
   const a=appData=snap.data(),ext=extOf(a).toUpperCase(),isFile=a.kind==='file',fv=favs().has(id);
   document.title=`${a.name||'ERROR 404'} — ERROR 404`;
   const meta=[kindLabel(a)+(ext?` ${ext}`:''),a.version?`الإصدار ${a.version}`:'',a.size||'',a.category||''].filter(Boolean).map(esc).join(' · ');
-  box.innerHTML=`<div class="app-detail"><div class="app-icon app-icon-large">${tile(a)}</div><div class="live-pill">${ic('live')}متاح الآن</div><h1>${esc(a.name)}</h1><div class="detail-rating" id="detailRating"></div><p class="app-meta">${meta}</p><p class="app-description">${esc(a.description||'لا يوجد وصف بعد.')}</p><div class="app-actions"><a id="download" class="download-main" href="${esc(a.downloadURL||'#')}" target="_blank" rel="noopener">${ic('download')}${isFile?'تحميل الملف':'تحميل التطبيق'}</a><button class="back-main" id="favBtn">${ic('heart',fv?'fav-on':'')}${fv?'في المفضلة':'أضف للمفضلة'}</button><button class="back-main" id="shareBtn">${ic('share')}مشاركة</button><a class="back-main" href="index.html">${ic('arrowR')}العودة للمتجر</a></div><div class="download-info">عدد التحميلات: <b>${Number(a.downloads||0).toLocaleString()}</b></div></div>`;
+  box.innerHTML=`<div class="app-detail"><div class="app-icon app-icon-large">${tile(a)}</div><div class="live-pill">${ic('live')}متاح الآن</div><h1>${esc(a.name)}</h1><div class="detail-rating" id="detailRating"></div><p class="app-meta">${meta}</p><p class="app-description">${esc(a.description||'لا يوجد وصف بعد.')}</p><div id="shotsWrap">${shotsHTML()}</div><div class="app-actions"><a id="download" class="download-main" href="${esc(a.downloadURL||'#')}" target="_blank" rel="noopener">${ic('download')}${isFile?'تحميل الملف':'تحميل التطبيق'}</a><button class="back-main" id="favBtn">${ic('heart',fv?'fav-on':'')}${fv?'في المفضلة':'أضف للمفضلة'}</button><button class="back-main" id="shareBtn">${ic('share')}مشاركة</button><a class="back-main" href="index.html">${ic('arrowR')}العودة للمتجر</a></div><div class="download-info">عدد التحميلات: <b>${Number(a.downloads||0).toLocaleString()}</b></div></div>`;
   paintRating();rbox.hidden=!store.reviewsOn;
   $('#download')?.addEventListener('click',async e=>{if(!a.downloadURL){e.preventDefault();alert('رابط التحميل غير متوفر حاليًا.');return}try{await updateDoc(doc(db,'apps',id),{downloads:increment(1),updatedAt:serverTimestamp()})}catch{}});
   $('#favBtn').onclick=()=>{const s=favs();s.has(id)?s.delete(id):s.add(id);saveFavs(s);const on=s.has(id);$('#favBtn').innerHTML=`${ic('heart',on?'fav-on':'')}${on?'في المفضلة':'أضف للمفضلة'}`};

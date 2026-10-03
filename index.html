@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#020811"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon-192.png"><link rel="stylesheet" href="styles.css"><title>ERROR 404 NOT FOUND — متجر التطبيقات والملفات</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#020811"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon-192.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://www.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"><link rel="modulepreload" href="core.js"><link rel="modulepreload" href="icons.js"><link rel="stylesheet" href="styles.css"><meta name="description" content="متجر تطبيقات وألعاب وأدوات وملفات — حمّل كل ما تحتاجه من مكان واحد."><meta property="og:type" content="website"><meta property="og:site_name" content="ERROR 404 NOT FOUND"><meta property="og:title" content="ERROR 404 NOT FOUND — متجر التطبيقات والملفات"><meta property="og:description" content="مكان واحد — جميع تطبيقاتك وملفاتك المفضلة. تطبيقات · ألعاب · أدوات · ملفات."><meta property="og:image" content="https://error-404-tawny.vercel.app/assets/icon-512.jpg"><meta name="twitter:card" content="summary"><title>ERROR 404 NOT FOUND — متجر التطبيقات والملفات</title></head>
 <body id="top">
 <header id="siteHeader"></header>
 <main class="wrap">
-  <section class="hero">
+  <section class="hero" id="heroSec">
     <div class="hero-image"></div><div class="hero-overlay"></div>
     <div class="hero-copy">
       <div class="welcome" id="heroWelcome">مرحباً بك في متجر</div>
@@ -26,8 +26,9 @@
   </section>
   <div class="layout" id="appsSection">
     <section class="content">
+      <div id="strips"></div>
       <div class="section-head"><h2 id="listTitle">أحدث المحتوى <span data-ic="clock"></span></h2><a href="#appsSection" id="showAll">عرض الكل <span data-ic="arrowL"></span></a></div>
-      <div class="apps" id="apps"></div>
+      <div class="apps" id="apps"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div><div class="more-wrap" id="moreWrap" hidden><button class="admin-btn" id="moreBtn">عرض المزيد</button></div>
     </section>
     <aside class="sidebar">
       <div class="panel categories" id="categories"><h3>التصنيفات</h3>
@@ -42,7 +43,7 @@
         <a href="#appsSection" class="category-link" data-category="أخرى"><i data-ic="dots"></i><span>أخرى</span></a>
       </div>
       <div class="panel featured"><h3><i data-ic="bolt"></i>محتوى المتجر</h3><p><span id="liveCount">0</span> عنصر منشور لحظيًا</p><button id="exploreBtn">استكشف الآن <span data-ic="arrowL"></span></button></div>
-      <div class="panel store-stats"><h3>إحصائيات المتجر</h3>
+      <div class="panel store-stats" id="statsPanel"><h3>إحصائيات المتجر</h3>
         <div><b id="liveCount2">0</b><span>عدد العناصر</span></div>
         <div><b id="liveReviews">0</b><span>عدد التقييمات</span></div>
         <div><b id="liveVisitors">0</b><span>عدد الزوار</span></div>

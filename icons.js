@@ -73,7 +73,7 @@ const brandFor=n=>{n=(n||'').toLowerCase();return n.includes('whatsapp')?brand.w
 
 // أيقونة العنصر: صورة مرفوعة > أيقونة ماركة معروفة > أيقونة حسب نوع الملف
 export function tile(a){
-  if(a.iconURL)return `<img src="${esc(a.iconURL)}" alt="" loading="lazy">`;
+  if(a.iconURL)return `<img src="${esc(a.iconURL)}" alt="" loading="lazy" decoding="async">`;
   const b=brandFor(a.name);if(b)return b;
   const e=extOf(a);const name=EXT_ICONS[e]||(a.kind==='file'?'file':CATEGORY_ICONS[a.category]||'box');
   return `<div class="code-app-icon">${ic(name)}${e?`<em>${esc(e.slice(0,4))}</em>`:''}</div>`;

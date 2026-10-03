@@ -1,5 +1,5 @@
 import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,getDocs,query,orderBy,limit,serverTimestamp,deleteDoc} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-import {auth,db,ADMIN_EMAIL,esc,safeUrl,STORE_DEF,setPrefs,timeAgo,tsMs} from "./core.js";
+import {auth,db,ADMIN_EMAIL,esc,safeUrl,STORE_DEF,setPrefs,timeAgo,tsMs,resizeFit} from "./core.js";
 import {signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import {GoogleAuthProvider} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import {ic,hydrate,tile,extOf,kindLabel} from "./icons.js";
@@ -53,15 +53,25 @@ onAuthStateChanged(auth,async user=>{
 
 
 // ===== أيقونة العنصر: تصغير الصورة إلى 192px وتخزينها مع بيانات العنصر =====
+let shotsExisting=[],shotsNew=[],shotsDel=new Set();
 let editId=null,editData=null,iconData; // undefined = بدون تغيير، '' = إزالة، نص = صورة جديدة
 const cache={};
 function makeIcon(file){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const S=192,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(img.width,img.height);c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);URL.revokeObjectURL(url);res(c.toDataURL('image/webp',.85))};img.onerror=()=>rej(new Error('تعذر قراءة الصورة'));img.src=url})}
 function showIcon(src){$('iconPreview').innerHTML=src?`<img src="${esc(src)}" alt="">`:ic('image');$('iconName').textContent=src?'تم اختيار الصورة':'بدون صورة — سيتم استخدام أيقونة حسب نوع الملف'}
 $('iconFile').onchange=async()=>{const f=$('iconFile').files[0];if(!f)return;try{iconData=await makeIcon(f);showIcon(iconData)}catch(e){$('uploadStatus').textContent=e.message}};
 $('iconClear').onclick=()=>{iconData='';$('iconFile').value='';showIcon('')};
-function resetForm(){$('appForm').reset();editId=null;editData=null;iconData=undefined;showIcon('');$('apkName').textContent='اضغط هنا لاختيار الملف';$('formTitle').textContent='إضافة عنصر';$('uploadBtnText').textContent='رفع ونشر';$('cancelEdit').hidden=true;$('notifyWrap').hidden=false;$('uploadProgress').classList.remove('show');$('uploadPercent').classList.remove('show')}
+const MAXSHOTS=8;
+function paintShots(){const ex=shotsExisting.filter(s=>!shotsDel.has(s.id));
+ const t=(d,k)=>`<div class="shot-t"><img src="${esc(d)}" alt=""><button type="button" data-sx="${k}" aria-label="حذف">${ic('x')}</button></div>`;
+ $('shotsEdit').innerHTML=ex.map(s=>t(s.data,'e:'+s.id)).join('')+shotsNew.map((d,i)=>t(d,'n:'+i)).join('');
+ $('shotsInfo').textContent=`${ex.length+shotsNew.length}/${MAXSHOTS}`;
+ $('shotsEdit').querySelectorAll('[data-sx]').forEach(b=>b.onclick=()=>{const[k,v]=b.dataset.sx.split(':');if(k==='e')shotsDel.add(v);else shotsNew.splice(+v,1);paintShots()})}
+$('shotsFile').onchange=async()=>{const files=[...$('shotsFile').files];$('shotsFile').value='';
+ for(const f of files){if(shotsExisting.filter(s=>!shotsDel.has(s.id)).length+shotsNew.length>=MAXSHOTS)break;try{shotsNew.push(await resizeFit(f,1000,.72))}catch(e){$('uploadStatus').textContent=e.message}}paintShots()};
+function resetForm(){shotsExisting=[];shotsNew=[];shotsDel=new Set();paintShots();$('appForm').reset();editId=null;editData=null;iconData=undefined;showIcon('');$('apkName').textContent='اضغط هنا لاختيار الملف';$('formTitle').textContent='إضافة عنصر';$('uploadBtnText').textContent='رفع ونشر';$('cancelEdit').hidden=true;$('notifyWrap').hidden=false;$('uploadProgress').classList.remove('show');$('uploadPercent').classList.remove('show')}
 $('cancelEdit').onclick=()=>{resetForm();$('uploadStatus').textContent=''};
-function startEdit(id){const a=cache[id];if(!a)return;resetForm();editId=id;editData=a;
+async function startEdit(id){const a=cache[id];if(!a)return;resetForm();editId=id;editData=a;
+ try{const sn=await getDocs(query(collection(db,'apps',id,'shots'),orderBy('order')));shotsExisting=sn.docs.map(d=>({id:d.id,data:d.data().data}));paintShots()}catch{}
  $('appName').value=a.name||'';$('appVersion').value=a.version||'';$('appSize').value=a.size||'';$('appCategory').value=a.category||'أخرى';$('appKind').value=a.kind||'app';$('appDescription').value=a.description||'';
  showIcon(a.iconURL||'');$('apkName').textContent=`الملف الحالي: ${a.fileName||'ملف'} — اختر ملفًا جديدًا فقط إذا أردت استبداله`;
  $('formTitle').textContent='تعديل العنصر';$('uploadBtnText').textContent='حفظ التعديلات';$('cancelEdit').hidden=false;$('notifyWrap').hidden=true;
@@ -80,7 +90,7 @@ async function refresh(){
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>removeApp(b.dataset.delete));
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>startEdit(b.dataset.edit));
 }
-async function removeApp(id){if(!confirm("حذف العنصر وملفه من Google Drive؟"))return;try{const found=await getDoc(doc(db,"apps",id));const a=found.exists()?found.data():null;if(a?.driveFileId)await deleteDriveFile(a.driveFileId);await deleteDoc(doc(db,"apps",id));if(editId===id)resetForm();await refresh();}catch(e){alert("فشل الحذف: "+e.message)}}
+async function removeApp(id){if(!confirm("حذف العنصر وملفه من Google Drive؟"))return;try{const found=await getDoc(doc(db,"apps",id));const a=found.exists()?found.data():null;if(a?.driveFileId)await deleteDriveFile(a.driveFileId);try{const sh=await getDocs(collection(db,'apps',id,'shots'));for(const d of sh.docs)await deleteDoc(d.ref)}catch{}await deleteDoc(doc(db,"apps",id));if(editId===id)resetForm();await refresh();}catch(e){alert("فشل الحذف: "+e.message)}}
 
 $('appForm').onsubmit=async e=>{
  e.preventDefault();const file=$('apk').files[0];
@@ -104,6 +114,9 @@ $('appForm').onsubmit=async e=>{
   if(editId){await updateDoc(doc(db,'apps',editId),data);if(file&&editData?.driveFileId){try{await deleteDriveFile(editData.driveFileId)}catch{}}}
   else{const d=await addDoc(collection(db,'apps'),{...data,iconURL:iconData||'',downloads:0,createdAt:serverTimestamp()});id=d.id;
    if($('notifyNew').checked){try{await addDoc(collection(db,'notifications'),{title:data.kind==='file'?'ملف جديد في المتجر':'تطبيق جديد في المتجر',body:data.name+(data.description?' — '+data.description.slice(0,80):''),appId:id,createdAt:serverTimestamp()})}catch(e){console.warn('notify',e)}}}
+  status.textContent='جاري حفظ اللقطات...';
+  for(const sid of shotsDel){try{await deleteDoc(doc(db,'apps',id,'shots',sid))}catch{}}
+  let k=0;for(const d of shotsNew){await addDoc(collection(db,'apps',id,'shots'),{data:d,order:Date.now()+(k++),createdAt:serverTimestamp()})}
   status.innerHTML=`<b>تم ${editId?'حفظ التعديلات':'النشر'} بنجاح.</b> <a href="app.html?id=${id}" target="_blank">فتح الصفحة</a>`;
   resetForm();await refresh();
  }catch(err){status.textContent='فشل العملية: '+err.message}
@@ -122,9 +135,9 @@ $('nSend').onclick=async()=>{const title=$('nTitle').value.trim(),body=$('nBody'
 // ===== إعدادات المتجر =====
 const SF={storeName:'sStoreName',storeSub:'sStoreSub',welcome:'sWelcome',tagline:'sTagline',defaultSort:'sSort',footerText:'sFooter',announceText:'sAnnText',announceLink:'sAnnLink',telegram:'sTelegram',whatsapp:'sWhatsapp',youtube:'sYoutube',contact:'sContact'};
 async function loadStore(){let s={...STORE_DEF};try{const d=await getDoc(doc(db,'settings','store'));if(d.exists())s={...s,...d.data()}}catch{}
- Object.entries(SF).forEach(([k,id])=>$(id).value=s[k]??'');$('sReviews').checked=s.reviewsOn!==false;$('sAnnOn').checked=!!s.announceOn}
+ Object.entries(SF).forEach(([k,id])=>$(id).value=s[k]??'');$('sReviews').checked=s.reviewsOn!==false;$('sStrips').checked=s.stripsOn!==false;$('sHero').checked=s.heroOn!==false;$('sStats').checked=s.statsOn!==false;$('sPage').value=String(s.pageSize||24);$('sStripN').value=String(s.stripCount||8);$('sAnnOn').checked=!!s.announceOn}
 $('storeForm').onsubmit=async e=>{e.preventDefault();const d={};Object.entries(SF).forEach(([k,id])=>d[k]=$(id).value.trim());
  ['announceLink','telegram','whatsapp','youtube','contact'].forEach(k=>d[k]=d[k]?safeUrl(d[k]):'');
- d.reviewsOn=$('sReviews').checked;d.announceOn=$('sAnnOn').checked;d.updatedAt=serverTimestamp();
+ d.reviewsOn=$('sReviews').checked;d.stripsOn=$('sStrips').checked;d.heroOn=$('sHero').checked;d.statsOn=$('sStats').checked;d.pageSize=+$('sPage').value;d.stripCount=+$('sStripN').value;d.announceOn=$('sAnnOn').checked;d.updatedAt=serverTimestamp();
  try{await setDoc(doc(db,'settings','store'),d,{merge:true});$('sStatus').textContent='تم حفظ إعدادات المتجر.'}catch(err){$('sStatus').textContent='فشل الحفظ: '+err.message}};
 loadStore();
