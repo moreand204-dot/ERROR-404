@@ -7,15 +7,15 @@
 <title>ERROR 404 NOT FOUND — متجر التطبيقات</title>
 <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body id="top">
 <header class="site-header">
   <div class="header-inner">
     <a class="brand" href="#"><img src="assets/logo.png" alt=""><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
     <nav class="nav">
-      <a class="active">الرئيسية</a><a>التطبيقات</a><a>الألعاب</a><a>الأدوات</a><a>التصنيفات</a>
+      <a class="active" href="#top">الرئيسية</a><a href="#appsSection">التطبيقات</a><a href="#appsSection" data-nav-filter="ألعاب">الألعاب</a><a href="#appsSection" data-nav-filter="أدوات">الأدوات</a><a href="#categories">التصنيفات</a>
     </nav>
     <div class="header-tools">
-      <div class="search-mini"><input placeholder="ابحث عن تطبيق أو لعبة..."><button aria-label="بحث">⌕</button></div>
+      <div class="search-mini"><input id="mainSearch" placeholder="ابحث عن تطبيق أو لعبة..." aria-label="البحث"><button id="miniSearchBtn" aria-label="بحث"></button></div>
       <button class="icon-btn" id="theme" aria-label="تغيير المظهر"></button>
       <button class="icon-btn" id="loginBtn" aria-label="تسجيل الدخول"></button>
       <button class="icon-btn menu-btn" id="menu" aria-label="القائمة"></button>
@@ -31,32 +31,32 @@
       <div class="welcome">مرحباً بك في متجر</div>
       <h1>ERROR <strong>404</strong> NOT FOUND</h1>
       <p>مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
-      <div class="hero-search"><input placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
-      <div class="chips"><button>الأكثر تحميلاً</button><button>الأحدث</button><button>الألعاب</button><button>التطبيقات</button><button>الأدوات</button></div>
+      <div class="hero-search"><input id="heroSearch" placeholder="ابحث عن تطبيق أو لعبة..." aria-label="البحث"><button id="heroSearchBtn" aria-label="بحث"></button></div>
+      <div class="chips"><button class="chip active" data-filter="all">الكل</button><button class="chip" data-filter="popular">🔥 الأكثر تحميلاً</button><button class="chip" data-filter="latest">⚡ الأحدث</button><button class="chip" data-filter="ألعاب">🎮 الألعاب</button><button class="chip" data-filter="تطبيقات">▦ التطبيقات</button><button class="chip" data-filter="أدوات">🔧 الأدوات</button></div>
     </div>
   </section>
 
-  <div class="layout">
+  <div class="layout" id="appsSection">
     <section class="content">
       <div class="section-head"><h2>أحدث التطبيقات <span>◷</span></h2><a>عرض الكل ←</a></div>
       <div class="apps" id="apps"></div>
     </section>
 
     <aside class="sidebar">
-      <div class="panel categories">
+      <div class="panel categories" id="categories">
         <h3>التصنيفات</h3>
-        <a>🎮 <span>ألعاب</span></a><a>▦ <span>تطبيقات</span></a><a>🔧 <span>أدوات</span></a>
-        <a>◌ <span>تواصل اجتماعي</span></a><a>▶ <span>ترفيه</span></a><a>▣ <span>تعديل الصور</span></a>
-        <a>▤ <span>تعليم</span></a><a>••• <span>أخرى</span></a>
+        <a href="#appsSection" class="category-link" data-category="ألعاب">🎮 <span>ألعاب</span></a><a href="#appsSection" class="category-link" data-category="تطبيقات">▦ <span>تطبيقات</span></a><a href="#appsSection" class="category-link" data-category="أدوات">🔧 <span>أدوات</span></a>
+        <a href="#appsSection" class="category-link" data-category="تواصل اجتماعي">◉ <span>تواصل اجتماعي</span></a><a href="#appsSection" class="category-link" data-category="ترفيه">▶ <span>ترفيه</span></a><a href="#appsSection" class="category-link" data-category="تعديل الصور">▣ <span>تعديل الصور</span></a>
+        <a href="#appsSection" class="category-link" data-category="تعليم">▤ <span>تعليم</span></a><a href="#appsSection" class="category-link" data-category="أخرى">••• <span>أخرى</span></a>
       </div>
       <div class="panel featured">
-        <h3>تطبيقات مختارة</h3><p>مجموعة خاصة · مميزة</p><button>استكشف الآن</button>
+        <h3>⚡ تطبيقات المتجر</h3><p><span id="liveCount">0</span> تطبيق منشور لحظيًا</p><button onclick="document.querySelector('#appsSection').scrollIntoView({behavior:'smooth'})">استكشف الآن ←</button>
       </div>
       <div class="panel store-stats">
         <h3>إحصائيات المتجر</h3>
-        <div><b>56</b><span>عدد التطبيقات</span></div>
-        <div><b>1,245,870</b><span>عدد التحميلات</span></div>
-        <div><b>248,632</b><span>عدد الزوار</span></div>
+        <div><b id="liveCount2">0</b><span>عدد التطبيقات</span></div>
+        <div><b>↗ مباشر</b><span>بيانات Firestore لحظيًا</span></div>
+        <div><b id="liveVisitors">0</b><span>عدد الزوار</span></div>
       </div>
     </aside>
   </div>

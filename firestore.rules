@@ -17,7 +17,7 @@ service cloud.firestore {
       allow create, update: if signedIn() && request.auth.uid == userId;
     }
     match /stats/{statId} {
-      allow read: if admin();
+      allow read: if true;
       allow create: if statId == 'global' && request.resource.data.visitors == 1;
       allow update: if statId == 'global' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['visitors','updatedAt']) && request.resource.data.visitors == resource.data.visitors + 1;
       allow delete: if admin();

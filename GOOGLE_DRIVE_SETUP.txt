@@ -1,14 +1,36 @@
-ERROR 404 STORE — Google Drive upload
+ERROR 404 NOT FOUND — Google Drive live setup
 
-OAuth Client ID:
-660209763876-4aochiriq3vsl5beo1rifqlctemn1dck.apps.googleusercontent.com
+1) Google Cloud:
+- Enable Google Drive API.
+- OAuth app: External + Test user: moreand458@gmail.com.
+- Data Access scope: https://www.googleapis.com/auth/drive.file
+- Web OAuth client authorized JavaScript origin:
+  https://error-404-tawny.vercel.app
 
-Scope:
-https://www.googleapis.com/auth/drive.file
+2) Firebase project:
+- Project: ourstory-f33db
+- Enable Google Authentication.
+- Create Firestore Database.
+- Publish firestore.rules from this folder.
+- Add Vercel domain to Firebase Authentication authorized domains.
 
-Authorized JavaScript origin:
-https://error-404-tawny.vercel.app
+3) Admin:
+- Only moreand458@gmail.com can open admin.html.
+- Uploading an APK requests Google Drive permission only when the admin uploads.
+- APKs are uploaded directly to the admin's Google Drive with a resumable upload.
+- The created file is shared as public reader so visitors can download it.
+- Firestore stores app metadata + Drive file ID + download URL.
 
-The Client Secret must NOT be put in frontend files, GitHub, or Vercel. This frontend uses Google Identity Services token authorization.
+4) Live behavior:
+- Home page listens to Firestore with onSnapshot; newly published/deleted apps appear without refresh.
+- App pages listen live to their own document.
+- Download counter updates live.
+- Store visitor count updates live.
 
-When the admin uploads an APK, the browser requests Drive permission, uploads the APK to Drive, makes the file readable by anyone with the link, then stores the Drive file ID and public download URL in Firestore.
+5) Deploy to Vercel:
+- Upload the CONTENTS of store_work as the Vercel project root.
+- Do not put the folder itself as a nested directory.
+
+Important:
+- The OAuth client secret is NOT used in the browser. Do not publish it.
+- The free Google Drive storage quota is the limit of the Google account; it is not unlimited.

@@ -17,4 +17,4 @@ measurementId: G-9TBR9QFHQR
 4) Authentication → Settings → Authorized domains → أضف دومين المتجر.
 
 Firebase Storage غير مستخدم في نسخة المتجر الحالية.
-ملفات APK تذهب إلى Cloudflare R2 عن طريق Worker.
+ملفات APK تذهب إلى Google Drive عن طريق Google OAuth، وبيانات التطبيقات في Firestore.
