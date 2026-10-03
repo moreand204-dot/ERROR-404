@@ -43,7 +43,15 @@ shield:'<path d="M12 3l8 3v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/><path d=
 telegram:'<path d="m21 3-3.2 18-6.7-5-3.5 3.3.6-5.3L3 11.8 21 3Z"/><path d="m8.2 13.1 9.1-6.2-7 7.2"/>',
 whatsapp:'<path d="M20 11.7a8 8 0 0 1-11.8 7L4 20l1.3-4A8 8 0 1 1 20 11.7Z"/><path d="M8.4 8.2c.3-.6.6-.6 1-.6h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.7.8c.7 1.2 1.6 2 2.8 2.6l.7-.7c.2-.2.4-.2.7-.1l1.7.8c.3.1.4.3.3.6-.2 1-1 1.6-1.9 1.6-2.1 0-5.9-3.1-6.8-5.9-.4-1.1-.2-1.6.5-1.9Z"/>',
 youtube:'<rect x="3" y="6" width="18" height="12" rx="4"/><path d="m10 9 5 3-5 3V9Z"/>',
-send:'<path d="M21 3 3 10l7 3 3 7 8-17Z"/><path d="m10 13 5-5"/>'
+send:'<path d="M21 3 3 10l7 3 3 7 8-17Z"/><path d="m10 13 5-5"/>',
+star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"/>',
+bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 21a2 2 0 0 0 4 0"/>',
+gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
+logout:'<path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="M16 8l4 4-4 4M20 12H9"/>',
+share:'<circle cx="18" cy="5.5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="18.5" r="2.5"/><path d="m8.2 10.8 7.6-4M8.2 13.2l7.6 4"/>',
+message:'<path d="M4 5h16v11H9l-5 4V5Z"/>',
+camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4V8Z"/><circle cx="12" cy="13" r="3.5"/>',
+megaphone:'<path d="M3 10v4h4l9 5V5L7 10H3Z"/><path d="M19 9a4 4 0 0 1 0 6"/>'
 };
 export const ic=(n,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" aria-hidden="true">${P[n]||P.file}</svg>`;
 export const hydrate=(root=document)=>root.querySelectorAll('[data-ic]').forEach(el=>{el.innerHTML=ic(el.dataset.ic)});

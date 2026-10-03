@@ -1,15 +1,13 @@
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,getDocs,query,orderBy,limit,serverTimestamp,deleteDoc} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import {auth,db,ADMIN_EMAIL,esc,safeUrl,STORE_DEF,setPrefs,timeAgo,tsMs} from "./core.js";
+import {signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import {GoogleAuthProvider} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
 import {ic,hydrate,tile,extOf,kindLabel} from "./icons.js";
 
-const firebaseConfig={apiKey:"AIzaSyCypIGW0i3ugYgPLBoQrBm-WolT2Cvkyuo",authDomain:"ourstory-f33db.firebaseapp.com",projectId:"ourstory-f33db",storageBucket:"ourstory-f33db.firebasestorage.app",messagingSenderId:"685629313835",appId:"1:685629313835:web:fb06292932019eabc56b6e",measurementId:"G-9TBR9QFHQR"};
-const ADMIN_EMAIL="moreand458@gmail.com";
 const DRIVE_CLIENT_ID="660209763876-4aochiriq3vsl5beo1rifqlctemn1dck.apps.googleusercontent.com";
 const DRIVE_SCOPE="https://www.googleapis.com/auth/drive.file";
-const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
-const $=id=>document.getElementById(id); const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-function theme(){document.documentElement.classList.toggle("light");localStorage.theme=document.documentElement.classList.contains("light")?"light":"dark";$('theme').innerHTML=ic(document.documentElement.classList.contains("light")?'moon':'sun')} if(localStorage.theme==="light")document.documentElement.classList.add("light");$('theme').innerHTML=ic(document.documentElement.classList.contains("light")?'moon':'sun');$('theme').onclick=theme;hydrate();
+const $=id=>document.getElementById(id);
+const themeIcon=()=>$('theme').innerHTML=ic(document.documentElement.classList.contains('light')?'moon':'sun');function theme(){setPrefs({theme:document.documentElement.classList.contains('light')?'dark':'light'});themeIcon()}themeIcon();$('theme').onclick=theme;hydrate();
 $('shieldIcon').innerHTML=ic('shield');
 $('apk').onchange=()=>{const f=$('apk').files[0];if(!f){$('apkName').textContent="لم يتم اختيار ملف";return}
  $('apkName').textContent=`${f.name} — ${(f.size/1024/1024).toFixed(1)} MB`;
@@ -61,12 +59,12 @@ function makeIcon(file){return new Promise((res,rej)=>{const img=new Image(),url
 function showIcon(src){$('iconPreview').innerHTML=src?`<img src="${esc(src)}" alt="">`:ic('image');$('iconName').textContent=src?'تم اختيار الصورة':'بدون صورة — سيتم استخدام أيقونة حسب نوع الملف'}
 $('iconFile').onchange=async()=>{const f=$('iconFile').files[0];if(!f)return;try{iconData=await makeIcon(f);showIcon(iconData)}catch(e){$('uploadStatus').textContent=e.message}};
 $('iconClear').onclick=()=>{iconData='';$('iconFile').value='';showIcon('')};
-function resetForm(){$('appForm').reset();editId=null;editData=null;iconData=undefined;showIcon('');$('apkName').textContent='اضغط هنا لاختيار الملف';$('formTitle').textContent='إضافة عنصر';$('uploadBtnText').textContent='رفع ونشر';$('cancelEdit').hidden=true;$('uploadProgress').classList.remove('show');$('uploadPercent').classList.remove('show')}
+function resetForm(){$('appForm').reset();editId=null;editData=null;iconData=undefined;showIcon('');$('apkName').textContent='اضغط هنا لاختيار الملف';$('formTitle').textContent='إضافة عنصر';$('uploadBtnText').textContent='رفع ونشر';$('cancelEdit').hidden=true;$('notifyWrap').hidden=false;$('uploadProgress').classList.remove('show');$('uploadPercent').classList.remove('show')}
 $('cancelEdit').onclick=()=>{resetForm();$('uploadStatus').textContent=''};
 function startEdit(id){const a=cache[id];if(!a)return;resetForm();editId=id;editData=a;
  $('appName').value=a.name||'';$('appVersion').value=a.version||'';$('appSize').value=a.size||'';$('appCategory').value=a.category||'أخرى';$('appKind').value=a.kind||'app';$('appDescription').value=a.description||'';
  showIcon(a.iconURL||'');$('apkName').textContent=`الملف الحالي: ${a.fileName||'ملف'} — اختر ملفًا جديدًا فقط إذا أردت استبداله`;
- $('formTitle').textContent='تعديل العنصر';$('uploadBtnText').textContent='حفظ التعديلات';$('cancelEdit').hidden=false;
+ $('formTitle').textContent='تعديل العنصر';$('uploadBtnText').textContent='حفظ التعديلات';$('cancelEdit').hidden=false;$('notifyWrap').hidden=true;
  document.querySelectorAll('.admin-side button,.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-tab="appsTab"]').classList.add('active');$('appsTab').classList.add('active');$('appForm').scrollIntoView({behavior:'smooth'})}
 
 async function refresh(){
@@ -78,6 +76,7 @@ async function refresh(){
  $('appsTable').innerHTML=rows||`<tr><td colspan="5">لا يوجد محتوى بعد.</td></tr>`;$('statsApps').innerHTML=stats||`<tr><td colspan="3">لا توجد بيانات.</td></tr>`;$('mApps').textContent=apps.size;$('mDownloads').textContent=downloads.toLocaleString();
  const users=await getDocs(query(collection(db,"users"),limit(1000)));$('mUsers').textContent=users.size;$('usersTable').innerHTML=[...users.docs].map(s=>{const u=s.data();return `<tr><td>${esc(u.email)}</td><td>${esc(u.name)}</td><td>${u.lastLogin?.toDate?u.lastLogin.toDate().toLocaleString("ar-EG"):"-"}</td></tr>`}).join("")||`<tr><td colspan="3">لا يوجد مستخدمون.</td></tr>`;
  const statsDoc=await getDoc(doc(db,"stats","global"));$('mVisitors').textContent=statsDoc.exists()?Number(statsDoc.data().visitors||0).toLocaleString():"0";
+ fillNotifApps();loadNotifs();
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>removeApp(b.dataset.delete));
  document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>startEdit(b.dataset.edit));
 }
@@ -103,9 +102,29 @@ $('appForm').onsubmit=async e=>{
   status.textContent='جاري النشر...';
   let id=editId;
   if(editId){await updateDoc(doc(db,'apps',editId),data);if(file&&editData?.driveFileId){try{await deleteDriveFile(editData.driveFileId)}catch{}}}
-  else{const d=await addDoc(collection(db,'apps'),{...data,iconURL:iconData||'',downloads:0,createdAt:serverTimestamp()});id=d.id}
+  else{const d=await addDoc(collection(db,'apps'),{...data,iconURL:iconData||'',downloads:0,createdAt:serverTimestamp()});id=d.id;
+   if($('notifyNew').checked){try{await addDoc(collection(db,'notifications'),{title:data.kind==='file'?'ملف جديد في المتجر':'تطبيق جديد في المتجر',body:data.name+(data.description?' — '+data.description.slice(0,80):''),appId:id,createdAt:serverTimestamp()})}catch(e){console.warn('notify',e)}}}
   status.innerHTML=`<b>تم ${editId?'حفظ التعديلات':'النشر'} بنجاح.</b> <a href="app.html?id=${id}" target="_blank">فتح الصفحة</a>`;
   resetForm();await refresh();
  }catch(err){status.textContent='فشل العملية: '+err.message}
  finally{btn.disabled=false;btn.style.opacity='1'}
 };
+
+// ===== الإشعارات =====
+function fillNotifApps(){$('nApp').innerHTML='<option value="">بدون</option>'+Object.entries(cache).map(([k,a])=>`<option value="${esc(k)}">${esc(a.name)}</option>`).join('')}
+async function loadNotifs(){const s=await getDocs(query(collection(db,'notifications'),orderBy('createdAt','desc'),limit(30)));
+ $('nTable').innerHTML=s.docs.map(d=>{const n=d.data();return `<tr><td>${esc(n.title)}</td><td>${esc((n.body||'').slice(0,60))}</td><td><button class="admin-btn danger" data-ndel="${d.id}">${ic('trash')}حذف</button></td></tr>`}).join('')||'<tr><td colspan="3">لا توجد إشعارات.</td></tr>';
+ document.querySelectorAll('[data-ndel]').forEach(b=>b.onclick=async()=>{if(!confirm('حذف الإشعار؟'))return;await deleteDoc(doc(db,'notifications',b.dataset.ndel));loadNotifs()})}
+$('nSend').onclick=async()=>{const title=$('nTitle').value.trim(),body=$('nBody').value.trim();if(!title){$('nStatus').textContent='اكتب عنوان الإشعار.';return}
+ const n={title:title.slice(0,80),body:body.slice(0,200),createdAt:serverTimestamp()};const app=$('nApp').value,link=safeUrl($('nLink').value);if(app)n.appId=app;else if(link)n.link=link;
+ try{await addDoc(collection(db,'notifications'),n);$('nStatus').textContent='تم إرسال الإشعار.';$('nTitle').value=$('nBody').value=$('nLink').value='';loadNotifs()}catch(e){$('nStatus').textContent='فشل: '+e.message}};
+
+// ===== إعدادات المتجر =====
+const SF={storeName:'sStoreName',storeSub:'sStoreSub',welcome:'sWelcome',tagline:'sTagline',defaultSort:'sSort',footerText:'sFooter',announceText:'sAnnText',announceLink:'sAnnLink',telegram:'sTelegram',whatsapp:'sWhatsapp',youtube:'sYoutube',contact:'sContact'};
+async function loadStore(){let s={...STORE_DEF};try{const d=await getDoc(doc(db,'settings','store'));if(d.exists())s={...s,...d.data()}}catch{}
+ Object.entries(SF).forEach(([k,id])=>$(id).value=s[k]??'');$('sReviews').checked=s.reviewsOn!==false;$('sAnnOn').checked=!!s.announceOn}
+$('storeForm').onsubmit=async e=>{e.preventDefault();const d={};Object.entries(SF).forEach(([k,id])=>d[k]=$(id).value.trim());
+ ['announceLink','telegram','whatsapp','youtube','contact'].forEach(k=>d[k]=d[k]?safeUrl(d[k]):'');
+ d.reviewsOn=$('sReviews').checked;d.announceOn=$('sAnnOn').checked;d.updatedAt=serverTimestamp();
+ try{await setDoc(doc(db,'settings','store'),d,{merge:true});$('sStatus').textContent='تم حفظ إعدادات المتجر.'}catch(err){$('sStatus').textContent='فشل الحفظ: '+err.message}};
+loadStore();

@@ -1,0 +1,22 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#020811"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icon-192.png"><link rel="stylesheet" href="styles.css"><title>الإعدادات — ERROR 404</title></head><body>
+<header id="siteHeader"></header>
+<main class="wrap narrow">
+<h2 class="p-title" id="sTitle"></h2>
+<section class="panel set-card"><h3 id="h1"></h3>
+ <div class="set-row"><div><b>المظهر</b><small>داكن أو فاتح أو حسب إعدادات جهازك</small></div><div class="seg" data-pref="theme"><button data-val="dark">داكن</button><button data-val="light">فاتح</button><button data-val="auto">تلقائي</button></div></div>
+ <div class="set-row"><div><b>لون المتجر</b><small>يغيّر لون الأزرار والتمييز في كل الصفحات</small></div><div class="swatches" id="swatches"></div></div>
+ <div class="set-row"><div><b>حجم الكروت</b><small>عدد العناصر في الصف</small></div><div class="seg" data-pref="density"><button data-val="compact">مضغوط</button><button data-val="normal">عادي</button><button data-val="large">كبير</button></div></div>
+ <div class="set-row"><div><b>ترتيب الرئيسية</b><small>الترتيب الافتراضي لقائمة المتجر</small></div><select id="sortSel" class="sel"><option value="store">حسب المتجر</option><option value="latest">الأحدث</option><option value="popular">الأكثر تحميلاً</option><option value="rating">الأعلى تقييماً</option></select></div>
+</section>
+<section class="panel set-card"><h3 id="h2"></h3>
+ <div class="set-row"><div><b>إشعارات المحتوى الجديد</b><small>تنبيه عند نزول تطبيق أو ملف جديد أو إعلان من المتجر</small></div><label class="switch"><input type="checkbox" id="notifyOn"><i></i></label></div>
+ <div class="set-row"><div><b>إشعارات الجهاز</b><small id="permText">—</small></div><div class="p-btns"><button class="admin-btn primary" id="permBtn">تفعيل</button><button class="admin-btn" id="testBtn">تجربة إشعار</button></div></div>
+</section>
+<section class="panel set-card"><h3 id="h3"></h3>
+ <div class="set-row"><div><b>المفضلة</b><small id="favCount"></small></div><button class="admin-btn danger" id="clearFav">مسح المفضلة</button></div>
+ <div class="set-row"><div><b>إعادة الضبط</b><small>رجوع كل إعدادات العرض للوضع الافتراضي</small></div><button class="admin-btn" id="resetPrefs">إعادة الضبط</button></div>
+ <div class="set-row"><div><b>الحساب</b><small id="accText">غير مسجل الدخول</small></div><div class="p-btns"><a class="admin-btn" href="profile.html" id="accProfile" hidden>ملفي الشخصي</a><button class="admin-btn" id="accBtn">تسجيل الدخول</button></div></div>
+</section>
+</main>
+<footer id="siteFooter"></footer>
+<script type="module" src="settings.js"></script></body></html>

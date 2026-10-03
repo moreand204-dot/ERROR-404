@@ -1,15 +1,6 @@
-ERROR 404 NOT FOUND — متجر فعلي Firebase + Google Drive
-
-- Firebase Authentication: Google login
-- Firestore: app catalog, download counters, visitor counter
-- Google Drive: APK storage
-- Admin upload: admin.html → Google OAuth → Drive resumable upload → Firestore
-- Public app pages: app.html?id=APP_ID
-- Live updates: Firestore onSnapshot
-- Admin account: moreand458@gmail.com
-
-Deploy:
-Upload the contents of this folder as the Vercel project root.
-
-Google Drive OAuth:
-See GOOGLE_DRIVE_SETUP.txt
+ERROR 404 NOT FOUND — متجر Firebase + Google Drive
+اقرأ UPDATE_NOTES.txt أولًا (خطوات نشر القواعد).
+- الحسابات: Google Auth | البيانات: Firestore | الملفات: Google Drive
+- الأدمن: moreand458@gmail.com (admin.html)
+- صفحات: index / app?id= / profile / settings / admin
+Deploy: ارفع محتوى الفولدر كجذر مشروع Vercel. إعداد Drive: GOOGLE_DRIVE_SETUP.txt
