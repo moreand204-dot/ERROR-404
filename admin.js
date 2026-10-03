@@ -1,6 +1,7 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
-import {getFirestore,collection,doc,getDoc,setDoc,addDoc,getDocs,query,orderBy,limit,serverTimestamp,deleteDoc} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import {getFirestore,collection,doc,getDoc,setDoc,addDoc,updateDoc,getDocs,query,orderBy,limit,serverTimestamp,deleteDoc} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+import {ic,hydrate,tile,extOf,kindLabel} from "./icons.js";
 
 const firebaseConfig={apiKey:"AIzaSyCypIGW0i3ugYgPLBoQrBm-WolT2Cvkyuo",authDomain:"ourstory-f33db.firebaseapp.com",projectId:"ourstory-f33db",storageBucket:"ourstory-f33db.firebasestorage.app",messagingSenderId:"685629313835",appId:"1:685629313835:web:fb06292932019eabc56b6e",measurementId:"G-9TBR9QFHQR"};
 const ADMIN_EMAIL="moreand458@gmail.com";
@@ -8,12 +9,14 @@ const DRIVE_CLIENT_ID="660209763876-4aochiriq3vsl5beo1rifqlctemn1dck.apps.google
 const DRIVE_SCOPE="https://www.googleapis.com/auth/drive.file";
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const $=id=>document.getElementById(id); const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
-const shield=`<svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.4 8.4-8 10-4.6-1.6-8-5-8-10V6l8-3Z"/><path d="m9 12 2 2 4-5"/></svg>`;
-const sun=`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>`;
-const moon=`<svg viewBox="0 0 24 24"><path d="M20.8 14.1A8.5 8.5 0 0 1 9.9 3.2 8.6 8.6 0 1 0 20.8 14.1Z"/></svg>`;
-function theme(){document.documentElement.classList.toggle("light");localStorage.theme=document.documentElement.classList.contains("light")?"light":"dark";$('theme').innerHTML=document.documentElement.classList.contains("light")?moon:sun} if(localStorage.theme==="light")document.documentElement.classList.add("light");$('theme').innerHTML=document.documentElement.classList.contains("light")?moon:sun;$('theme').onclick=theme;
-$('shieldIcon').innerHTML=shield;
-$('apk').onchange=()=>{const f=$('apk').files[0];$('apkName').textContent=f?`${f.name} — ${(f.size/1024/1024).toFixed(1)} MB`:"لم يتم اختيار ملف"};
+function theme(){document.documentElement.classList.toggle("light");localStorage.theme=document.documentElement.classList.contains("light")?"light":"dark";$('theme').innerHTML=ic(document.documentElement.classList.contains("light")?'moon':'sun')} if(localStorage.theme==="light")document.documentElement.classList.add("light");$('theme').innerHTML=ic(document.documentElement.classList.contains("light")?'moon':'sun');$('theme').onclick=theme;hydrate();
+$('shieldIcon').innerHTML=ic('shield');
+$('apk').onchange=()=>{const f=$('apk').files[0];if(!f){$('apkName').textContent="لم يتم اختيار ملف";return}
+ $('apkName').textContent=`${f.name} — ${(f.size/1024/1024).toFixed(1)} MB`;
+ const ext=f.name.includes('.')?f.name.split('.').pop().toLowerCase():'';
+ if(!$('appName').value.trim())$('appName').value=f.name.replace(/\.[^.]+$/,'');
+ $('appSize').value=f.size>=1048576?`${(f.size/1048576).toFixed(1)} MB`:`${Math.max(1,Math.round(f.size/1024))} KB`;
+ $('appKind').value=ext==='apk'?'app':'file';$('appCategory').value=ext==='apk'?'تطبيقات':'ملفات'};
 document.querySelectorAll("[data-tab]").forEach(btn=>btn.onclick=()=>{document.querySelectorAll(".admin-side button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");$(btn.dataset.tab).classList.add("active")});
 $('adminGoogle').onclick=async()=>{try{$('loginStatus').textContent="جاري تسجيل الدخول...";await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){$('loginStatus').textContent="فشل تسجيل الدخول: "+e.message}};
 $('logout').onclick=()=>signOut(auth);
@@ -31,7 +34,7 @@ async function authorizeDrive(){
 async function driveFetch(url,options={}){if(!driveAccessToken)await authorizeDrive();let res=await fetch(url,{...options,headers:{Authorization:`Bearer ${driveAccessToken}`,...(options.headers||{})}});if(res.status===401){driveAccessToken=await authorizeDrive();res=await fetch(url,{...options,headers:{Authorization:`Bearer ${driveAccessToken}`,...(options.headers||{})}});}const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error?.message||`Google Drive error ${res.status}`);return data;}
 async function uploadToDrive(file,onProgress){
   if(!driveAccessToken)await authorizeDrive();
-  const meta={name:file.name,mimeType:'application/vnd.android.package-archive'};
+  const meta={name:file.name,mimeType:file.type||'application/octet-stream'};
   const init=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',{method:'POST',headers:{Authorization:`Bearer ${driveAccessToken}`,'Content-Type':'application/json; charset=UTF-8','X-Upload-Content-Type':meta.mimeType,'X-Upload-Content-Length':String(file.size)},body:JSON.stringify(meta)});
   if(!init.ok)throw new Error((await init.text())||`تعذر بدء رفع Google Drive (${init.status})`);
   const session=init.headers.get('Location'); if(!session)throw new Error('Google Drive لم يرجع رابط جلسة الرفع.');
@@ -50,28 +53,59 @@ onAuthStateChanged(auth,async user=>{
  await refresh();
 });
 
+
+// ===== أيقونة العنصر: تصغير الصورة إلى 192px وتخزينها مع بيانات العنصر =====
+let editId=null,editData=null,iconData; // undefined = بدون تغيير، '' = إزالة، نص = صورة جديدة
+const cache={};
+function makeIcon(file){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const S=192,c=document.createElement('canvas');c.width=c.height=S;const m=Math.min(img.width,img.height);c.getContext('2d').drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,S,S);URL.revokeObjectURL(url);res(c.toDataURL('image/webp',.85))};img.onerror=()=>rej(new Error('تعذر قراءة الصورة'));img.src=url})}
+function showIcon(src){$('iconPreview').innerHTML=src?`<img src="${esc(src)}" alt="">`:ic('image');$('iconName').textContent=src?'تم اختيار الصورة':'بدون صورة — سيتم استخدام أيقونة حسب نوع الملف'}
+$('iconFile').onchange=async()=>{const f=$('iconFile').files[0];if(!f)return;try{iconData=await makeIcon(f);showIcon(iconData)}catch(e){$('uploadStatus').textContent=e.message}};
+$('iconClear').onclick=()=>{iconData='';$('iconFile').value='';showIcon('')};
+function resetForm(){$('appForm').reset();editId=null;editData=null;iconData=undefined;showIcon('');$('apkName').textContent='اضغط هنا لاختيار الملف';$('formTitle').textContent='إضافة عنصر';$('uploadBtnText').textContent='رفع ونشر';$('cancelEdit').hidden=true;$('uploadProgress').classList.remove('show');$('uploadPercent').classList.remove('show')}
+$('cancelEdit').onclick=()=>{resetForm();$('uploadStatus').textContent=''};
+function startEdit(id){const a=cache[id];if(!a)return;resetForm();editId=id;editData=a;
+ $('appName').value=a.name||'';$('appVersion').value=a.version||'';$('appSize').value=a.size||'';$('appCategory').value=a.category||'أخرى';$('appKind').value=a.kind||'app';$('appDescription').value=a.description||'';
+ showIcon(a.iconURL||'');$('apkName').textContent=`الملف الحالي: ${a.fileName||'ملف'} — اختر ملفًا جديدًا فقط إذا أردت استبداله`;
+ $('formTitle').textContent='تعديل العنصر';$('uploadBtnText').textContent='حفظ التعديلات';$('cancelEdit').hidden=false;
+ document.querySelectorAll('.admin-side button,.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-tab="appsTab"]').classList.add('active');$('appsTab').classList.add('active');$('appForm').scrollIntoView({behavior:'smooth'})}
+
 async function refresh(){
  const apps=await getDocs(query(collection(db,"apps"),orderBy("createdAt","desc"),limit(100)));
  let downloads=0,rows="",stats="";
- apps.forEach(s=>{const a=s.data();downloads+=Number(a.downloads||0);const link=`app.html?id=${encodeURIComponent(s.id)}`;rows+=`<tr><td>${esc(a.name)}</td><td>${esc(a.version)}</td><td>${Number(a.downloads||0).toLocaleString()}</td><td><a class="admin-btn" href="${link}" target="_blank">فتح</a> <button class="admin-btn danger" data-delete="${s.id}">حذف</button></td></tr>`;stats+=`<tr><td>${esc(a.name)}</td><td>${Number(a.downloads||0).toLocaleString()}</td><td><a href="${link}">${link}</a></td></tr>`});
- $('appsTable').innerHTML=rows||`<tr><td colspan="4">لا توجد تطبيقات بعد.</td></tr>`;$('statsApps').innerHTML=stats||`<tr><td colspan="3">لا توجد بيانات.</td></tr>`;$('mApps').textContent=apps.size;$('mDownloads').textContent=downloads.toLocaleString();
+ apps.forEach(s=>{const a=s.data();cache[s.id]=a;downloads+=Number(a.downloads||0);const link=`app.html?id=${encodeURIComponent(s.id)}`;
+  rows+=`<tr><td><div class="thumb">${tile(a)}</div></td><td>${esc(a.name)}</td><td><span class="badge">${kindLabel(a)}${extOf(a)?' '+esc(extOf(a).toUpperCase()):''}</span></td><td>${Number(a.downloads||0).toLocaleString()}</td><td><div class="row-actions"><a class="admin-btn" href="${link}" target="_blank">${ic('external')}فتح</a><button class="admin-btn" data-edit="${s.id}">${ic('pencil')}تعديل</button><button class="admin-btn danger" data-delete="${s.id}">${ic('trash')}حذف</button></div></td></tr>`;
+  stats+=`<tr><td>${esc(a.name)}</td><td>${Number(a.downloads||0).toLocaleString()}</td><td><a href="${link}">${link}</a></td></tr>`});
+ $('appsTable').innerHTML=rows||`<tr><td colspan="5">لا يوجد محتوى بعد.</td></tr>`;$('statsApps').innerHTML=stats||`<tr><td colspan="3">لا توجد بيانات.</td></tr>`;$('mApps').textContent=apps.size;$('mDownloads').textContent=downloads.toLocaleString();
  const users=await getDocs(query(collection(db,"users"),limit(1000)));$('mUsers').textContent=users.size;$('usersTable').innerHTML=[...users.docs].map(s=>{const u=s.data();return `<tr><td>${esc(u.email)}</td><td>${esc(u.name)}</td><td>${u.lastLogin?.toDate?u.lastLogin.toDate().toLocaleString("ar-EG"):"-"}</td></tr>`}).join("")||`<tr><td colspan="3">لا يوجد مستخدمون.</td></tr>`;
  const statsDoc=await getDoc(doc(db,"stats","global"));$('mVisitors').textContent=statsDoc.exists()?Number(statsDoc.data().visitors||0).toLocaleString():"0";
  document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>removeApp(b.dataset.delete));
+ document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>startEdit(b.dataset.edit));
 }
-async function removeApp(id){if(!confirm("حذف التطبيق وملف APK من Google Drive؟"))return;try{const found=await getDoc(doc(db,"apps",id));const a=found.exists()?found.data():null;if(a?.driveFileId)await deleteDriveFile(a.driveFileId);await deleteDoc(doc(db,"apps",id));await refresh();}catch(e){alert("فشل الحذف: "+e.message)}}
+async function removeApp(id){if(!confirm("حذف العنصر وملفه من Google Drive؟"))return;try{const found=await getDoc(doc(db,"apps",id));const a=found.exists()?found.data():null;if(a?.driveFileId)await deleteDriveFile(a.driveFileId);await deleteDoc(doc(db,"apps",id));if(editId===id)resetForm();await refresh();}catch(e){alert("فشل الحذف: "+e.message)}}
 
 $('appForm').onsubmit=async e=>{
- e.preventDefault();const file=$('apk').files[0];if(!file)return;
- if(!file.name.toLowerCase().endsWith('.apk')){$('uploadStatus').textContent="اختار ملف APK فقط.";return;}
+ e.preventDefault();const file=$('apk').files[0];
  const status=$('uploadStatus'),btn=$("uploadBtn"),progress=$("uploadProgress"),bar=$("uploadBar"),percent=$("uploadPercent");
+ if(!editId&&!file){status.textContent="اختار ملف الأول.";return}
  try{
-   btn.disabled=true;btn.style.opacity='.65';progress.classList.add('show');percent.classList.add('show');bar.style.width='0%';percent.textContent='0%';status.textContent='جاري الاتصال بـ Google Drive...';await authorizeDrive();
-   status.textContent='جاري رفع APK إلى Google Drive...';
-   const drive=await uploadToDrive(file,n=>{bar.style.width=n+'%';percent.textContent=n+'%';status.textContent=`جاري رفع APK إلى Google Drive... ${n}%`});
-   status.textContent='تم الرفع، جاري نشر التطبيق لحظيًا...';bar.style.width='100%';percent.textContent='100%';
-   const d=await addDoc(collection(db,"apps"),{name:$('appName').value.trim(),version:$('appVersion').value.trim(),size:$('appSize').value.trim()||`${(file.size/1024/1024).toFixed(1)} MB`,category:$('appCategory').value,description:$('appDescription').value.trim(),downloadURL:drive.downloadURL,driveFileId:drive.id,downloads:0,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
-   status.innerHTML=`<b>✓ تم نشر التطبيق فعليًا.</b> <a href="app.html?id=${d.id}" target="_blank">فتح صفحة التطبيق</a>`;e.target.reset();$('apkName').textContent='لم يتم اختيار ملف';await refresh();
- }catch(err){status.textContent='فشل الرفع: '+err.message}
+  btn.disabled=true;btn.style.opacity='.65';
+  const data={name:$('appName').value.trim(),version:$('appVersion').value.trim(),size:$('appSize').value.trim(),category:$('appCategory').value,kind:$('appKind').value,description:$('appDescription').value.trim(),updatedAt:serverTimestamp()};
+  if(iconData!==undefined)data.iconURL=iconData;
+  if(file){
+   progress.classList.add('show');percent.classList.add('show');bar.style.width='0%';percent.textContent='0%';
+   status.textContent='جاري الاتصال بـ Google Drive...';await authorizeDrive();
+   status.textContent='جاري رفع الملف إلى Google Drive...';
+   const drive=await uploadToDrive(file,n=>{bar.style.width=n+'%';percent.textContent=n+'%';status.textContent=`جاري رفع الملف... ${n}%`});
+   bar.style.width='100%';percent.textContent='100%';
+   Object.assign(data,{downloadURL:drive.downloadURL,driveFileId:drive.id,fileName:file.name,mimeType:file.type||'application/octet-stream',ext:file.name.includes('.')?file.name.split('.').pop().toLowerCase():''});
+   if(!data.size)data.size=`${(file.size/1048576).toFixed(1)} MB`;
+  }
+  status.textContent='جاري النشر...';
+  let id=editId;
+  if(editId){await updateDoc(doc(db,'apps',editId),data);if(file&&editData?.driveFileId){try{await deleteDriveFile(editData.driveFileId)}catch{}}}
+  else{const d=await addDoc(collection(db,'apps'),{...data,iconURL:iconData||'',downloads:0,createdAt:serverTimestamp()});id=d.id}
+  status.innerHTML=`<b>تم ${editId?'حفظ التعديلات':'النشر'} بنجاح.</b> <a href="app.html?id=${id}" target="_blank">فتح الصفحة</a>`;
+  resetForm();await refresh();
+ }catch(err){status.textContent='فشل العملية: '+err.message}
  finally{btn.disabled=false;btn.style.opacity='1'}
 };

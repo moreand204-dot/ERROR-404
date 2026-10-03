@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#020811">
-<title>ERROR 404 NOT FOUND — متجر التطبيقات</title>
+<title>ERROR 404 NOT FOUND — متجر التطبيقات والملفات</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body id="top">
@@ -12,10 +12,10 @@
   <div class="header-inner">
     <a class="brand" href="#"><img src="assets/logo.png" alt=""><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
     <nav class="nav">
-      <a class="active" href="#top">الرئيسية</a><a href="#appsSection">التطبيقات</a><a href="#appsSection" data-nav-filter="ألعاب">الألعاب</a><a href="#appsSection" data-nav-filter="أدوات">الأدوات</a><a href="#categories">التصنيفات</a>
+      <a class="active" href="#top">الرئيسية</a><a href="#appsSection">التطبيقات</a><a href="#appsSection" data-nav-filter="ألعاب">الألعاب</a><a href="#appsSection" data-nav-filter="أدوات">الأدوات</a><a href="#appsSection" data-nav-filter="ملفات">الملفات</a><a href="#categories">التصنيفات</a>
     </nav>
     <div class="header-tools">
-      <div class="search-mini"><input id="mainSearch" placeholder="ابحث عن تطبيق أو لعبة..." aria-label="البحث"><button id="miniSearchBtn" aria-label="بحث"></button></div>
+      <div class="search-mini"><input id="mainSearch" placeholder="ابحث عن تطبيق أو ملف..." aria-label="البحث"><button id="miniSearchBtn" aria-label="بحث"></button></div>
       <button class="icon-btn" id="theme" aria-label="تغيير المظهر"></button>
       <button class="icon-btn" id="loginBtn" aria-label="تسجيل الدخول"></button>
       <button class="icon-btn menu-btn" id="menu" aria-label="القائمة"></button>
@@ -30,58 +30,60 @@
     <div class="hero-copy">
       <div class="welcome">مرحباً بك في متجر</div>
       <h1>ERROR <strong>404</strong> NOT FOUND</h1>
-      <p>مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
-      <div class="hero-search"><input id="heroSearch" placeholder="ابحث عن تطبيق أو لعبة..." aria-label="البحث"><button id="heroSearchBtn" aria-label="بحث"></button></div>
-      <div class="chips"><button class="chip active" data-filter="all">الكل</button><button class="chip" data-filter="popular">🔥 الأكثر تحميلاً</button><button class="chip" data-filter="latest">⚡ الأحدث</button><button class="chip" data-filter="ألعاب">🎮 الألعاب</button><button class="chip" data-filter="تطبيقات">▦ التطبيقات</button><button class="chip" data-filter="أدوات">🔧 الأدوات</button></div>
+      <p>مكان واحد — جميع تطبيقاتك وملفاتك المفضلة<br>تطبيقات · ألعاب · أدوات · ملفات · والمزيد</p>
+      <div class="hero-search"><input id="heroSearch" placeholder="ابحث عن تطبيق أو ملف..." aria-label="البحث"><button id="heroSearchBtn" aria-label="بحث"></button></div>
+      <div class="chips"><button class="chip active" data-filter="all">الكل</button><button class="chip" data-filter="popular"><i data-ic="flame"></i>الأكثر تحميلاً</button><button class="chip" data-filter="latest"><i data-ic="bolt"></i>الأحدث</button><button class="chip" data-filter="ألعاب"><i data-ic="gamepad"></i>الألعاب</button><button class="chip" data-filter="تطبيقات"><i data-ic="grid"></i>التطبيقات</button><button class="chip" data-filter="أدوات"><i data-ic="sliders"></i>الأدوات</button><button class="chip" data-filter="ملفات"><i data-ic="folder"></i>الملفات</button></div>
     </div>
   </section>
 
   <div class="layout" id="appsSection">
     <section class="content">
-      <div class="section-head"><h2>أحدث التطبيقات <span>◷</span></h2><a>عرض الكل ←</a></div>
+      <div class="section-head"><h2>أحدث المحتوى <span data-ic="clock"></span></h2><a href="#appsSection" id="showAll">عرض الكل <span data-ic="arrowL"></span></a></div>
       <div class="apps" id="apps"></div>
     </section>
 
     <aside class="sidebar">
       <div class="panel categories" id="categories">
         <h3>التصنيفات</h3>
-        <a href="#appsSection" class="category-link" data-category="ألعاب">🎮 <span>ألعاب</span></a><a href="#appsSection" class="category-link" data-category="تطبيقات">▦ <span>تطبيقات</span></a><a href="#appsSection" class="category-link" data-category="أدوات">🔧 <span>أدوات</span></a>
-        <a href="#appsSection" class="category-link" data-category="تواصل اجتماعي">◉ <span>تواصل اجتماعي</span></a><a href="#appsSection" class="category-link" data-category="ترفيه">▶ <span>ترفيه</span></a><a href="#appsSection" class="category-link" data-category="تعديل الصور">▣ <span>تعديل الصور</span></a>
-        <a href="#appsSection" class="category-link" data-category="تعليم">▤ <span>تعليم</span></a><a href="#appsSection" class="category-link" data-category="أخرى">••• <span>أخرى</span></a>
+        <a href="#appsSection" class="category-link" data-category="ألعاب"><i data-ic="gamepad"></i><span>ألعاب</span></a>
+        <a href="#appsSection" class="category-link" data-category="تطبيقات"><i data-ic="grid"></i><span>تطبيقات</span></a>
+        <a href="#appsSection" class="category-link" data-category="أدوات"><i data-ic="sliders"></i><span>أدوات</span></a>
+        <a href="#appsSection" class="category-link" data-category="ملفات"><i data-ic="folder"></i><span>ملفات</span></a>
+        <a href="#appsSection" class="category-link" data-category="تواصل اجتماعي"><i data-ic="users"></i><span>تواصل اجتماعي</span></a>
+        <a href="#appsSection" class="category-link" data-category="ترفيه"><i data-ic="play"></i><span>ترفيه</span></a>
+        <a href="#appsSection" class="category-link" data-category="تعديل الصور"><i data-ic="image"></i><span>تعديل الصور</span></a>
+        <a href="#appsSection" class="category-link" data-category="تعليم"><i data-ic="book"></i><span>تعليم</span></a>
+        <a href="#appsSection" class="category-link" data-category="أخرى"><i data-ic="dots"></i><span>أخرى</span></a>
       </div>
       <div class="panel featured">
-        <h3>⚡ تطبيقات المتجر</h3><p><span id="liveCount">0</span> تطبيق منشور لحظيًا</p><button onclick="document.querySelector('#appsSection').scrollIntoView({behavior:'smooth'})">استكشف الآن ←</button>
+        <h3><i data-ic="bolt"></i>محتوى المتجر</h3><p><span id="liveCount">0</span> عنصر منشور لحظيًا</p><button id="exploreBtn">استكشف الآن <span data-ic="arrowL"></span></button>
       </div>
       <div class="panel store-stats">
         <h3>إحصائيات المتجر</h3>
-        <div><b id="liveCount2">0</b><span>عدد التطبيقات</span></div>
-        <div><b>↗ مباشر</b><span>بيانات Firestore لحظيًا</span></div>
+        <div><b id="liveCount2">0</b><span>عدد العناصر</span></div>
+        <div><b class="live-b"><i data-ic="trend"></i>مباشر</b><span>بيانات Firestore لحظيًا</span></div>
         <div><b id="liveVisitors">0</b><span>عدد الزوار</span></div>
       </div>
     </aside>
   </div>
 </main>
 
-
 <div class="modal" id="authModal" aria-hidden="true">
   <div class="modal-backdrop" data-close-auth></div>
   <section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <button class="modal-close" data-close-auth aria-label="إغلاق">×</button>
+    <button class="modal-close" data-close-auth aria-label="إغلاق"><i data-ic="x"></i></button>
     <div class="auth-icon" id="authIcon"></div>
     <h2 id="authTitle">تسجيل الدخول</h2>
     <p class="auth-sub">سجّل الدخول بحساب Google للوصول إلى حسابك.</p>
-    <button class="google-btn" id="googleLogin">
-      <span class="google-mark">G</span>
-      تسجيل الدخول باستخدام Google
-    </button>
+    <button class="google-btn" id="googleLogin"><span class="google-mark">G</span>تسجيل الدخول باستخدام Google</button>
     <div class="auth-status" id="authStatus"></div>
   </section>
 </div>
 
 <footer class="footer">
-  <div><b>☠ ERROR 404 NOT FOUND</b><small>All rights reserved © 2026</small></div>
-  <div>𝕏　◉　◉　◉</div>
-  <div>ليس متجرًا رسميًا لأي من التطبيقات ♥</div>
+  <div class="foot-brand"><b><i data-ic="skull"></i>ERROR 404 NOT FOUND</b><small>All rights reserved © 2026</small></div>
+  <div class="social-links" id="socials"></div>
+  <div>ليس متجرًا رسميًا لأي من التطبيقات <i data-ic="heart" class="heart"></i></div>
 </footer>
 <script type="module" src="script.js"></script>
 </body>

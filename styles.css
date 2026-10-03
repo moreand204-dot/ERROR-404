@@ -21,3 +21,29 @@
 .chip.active{color:#fff;border-color:#087dff;background:#087dff22;box-shadow:0 0 0 1px #087dff33 inset}.code-app-icon{width:100%;height:100%;display:grid;place-items:center;font-size:27px;background:linear-gradient(145deg,#0b2c4a,#061323);border:1px solid #0c4d82;border-radius:12px;color:var(--cyan)}.empty-state{grid-column:1/-1;padding:45px 15px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.social-links{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}.social-links a{color:var(--muted);text-decoration:none;border:1px solid var(--line);padding:5px 8px;border-radius:8px}.social-links a:hover{color:var(--cyan);border-color:var(--cyan)}
 @media(max-width:680px){.social-links{gap:4px}.social-links a{font-size:7px;padding:4px 6px}}
 .app-detail{text-align:center;max-width:620px;margin:auto}.app-icon-large{width:112px;height:112px;margin:0 auto 10px;border-radius:25px}.live-pill{display:inline-block;color:var(--green);font-size:9px;border:1px solid #12dc7738;background:#12dc7710;padding:4px 9px;border-radius:20px}.app-detail h1{font-size:24px;margin:10px 0 3px}.app-meta{color:var(--muted);font-size:9px}.app-description{color:var(--muted);font-size:10px;line-height:2;margin:16px auto;max-width:520px}.app-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}.download-main,.back-main{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:16px;padding:9px 24px;font:700 10px Cairo}.download-main{background:linear-gradient(90deg,#067aff,#08a8ff);color:#fff}.back-main{border:1px solid var(--line);color:var(--text);background:var(--card)}.download-info{margin-top:16px;color:var(--muted);font-size:8px}.download-info b{color:var(--cyan)}
+
+/* ===== أيقونات SVG + دعم الملفات ===== */
+.ic{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.17em;flex:none}
+[data-ic]{display:inline-flex;align-items:center}
+.chip,.chips button{display:inline-flex;align-items:center;gap:5px}.chip i{display:inline-flex;font-size:11px}
+.section-head h2{display:flex;align-items:center;gap:6px}.section-head h2 span,.section-head a span,.featured button span{display:inline-flex;font-size:12px}
+.section-head a{display:inline-flex;align-items:center;gap:4px;text-decoration:none;cursor:pointer}
+.categories a i{display:inline-flex;font-size:13px;color:var(--cyan)}
+.panel h3{display:flex;align-items:center;gap:6px}.panel h3 i{display:inline-flex;color:var(--cyan)}
+.featured h3{justify-content:center}.featured button{display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.store-stats .live-b{display:flex;align-items:center;gap:5px}
+.app-card button{display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.app-icon img{width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit}
+.code-app-icon{position:relative;flex-direction:column;gap:1px}.code-app-icon svg{width:50%;height:50%}
+.code-app-icon em{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.5px;color:var(--text);opacity:.85;line-height:1}
+.app-icon-large .code-app-icon svg{width:46%;height:46%}.app-icon-large .code-app-icon em{font-size:14px}
+.ext-tag{color:var(--cyan);font-size:8px;font-weight:700;margin-top:3px}
+.empty-state{display:flex;flex-direction:column;align-items:center;gap:8px}.empty-state .ic{width:26px;height:26px;color:var(--cyan)}
+.footer .foot-brand b{display:inline-flex;align-items:center;gap:5px;color:var(--text)}.footer .heart{color:#ff5a7a;fill:#ff5a7a;stroke:none;vertical-align:-.2em}
+.footer .social-links{align-items:center}.footer .social-links a{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;font-size:15px}
+.modal-close{display:grid;place-items:center;width:30px;height:30px;font-size:17px;padding:0}
+.google-btn{gap:10px}
+.pill-btn{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--text);border:1px solid var(--line);background:var(--card);border-radius:9px;padding:7px 12px;font:700 10px Cairo}.pill-btn .ic{color:var(--cyan)}
+.download-main,.back-main{gap:7px}.live-pill{display:inline-flex;align-items:center;gap:5px}.live-pill .ic{width:10px;height:10px}
+.app-icon-large{width:112px;height:112px}.app-icon-large .code-app-icon{border-radius:25px}
+@media(max-width:680px){.footer .social-links a{width:28px;height:28px}.code-app-icon em{font-size:7px}}
