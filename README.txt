@@ -1,5 +1,6 @@
-ERROR 404 NOT FOUND — Responsive Frontend
-Open index.html.
-Designed for desktop, tablet and Android/iPhone screens.
-The hero image is assets/hero-404.jpg.
-This is still frontend-only; statistics and login are demo data.
+نسخة مطابقة محسنة للـMockup:
+- Desktop: نفس ترتيب الهيدر، Hero، 6 كروت، Sidebar يمين.
+- Mobile: يحافظ على نفس الهوية والتخطيط ويعيد توزيع العناصر بدون تصغير الموقع بالكامل.
+- جميع أيقونات التطبيقات محلية داخل assets.
+- hero-404.jpg و logo.png داخل assets.
+افتح index.html.

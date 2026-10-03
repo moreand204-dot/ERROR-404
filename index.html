@@ -3,69 +3,86 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#030912">
+<meta name="theme-color" content="#020811">
 <title>ERROR 404 NOT FOUND — متجر التطبيقات</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="header">
+<header class="site-header">
   <div class="header-inner">
-    <a class="logo" href="#"><img src="assets/logo.png" alt="ERROR 404"><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
-    <button class="mobile-menu" id="menuBtn" aria-label="القائمة">☰</button>
-    <nav id="nav">
-      <a class="active" href="#">الرئيسية</a>
-      <a href="#apps">التطبيقات</a>
-      <a href="#games">الألعاب</a>
-      <a href="#tools">الأدوات</a>
-      <a href="#categories">التصنيفات</a>
+    <a class="brand" href="#"><img src="assets/logo.png" alt=""><span>ERROR <b>404</b><small>NOT FOUND</small></span></a>
+    <nav class="nav">
+      <a class="active">الرئيسية</a><a>التطبيقات</a><a>الألعاب</a><a>الأدوات</a><a>التصنيفات</a>
     </nav>
-    <div class="header-actions">
-      <div class="top-search"><input placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
-      <button class="circle" id="themeBtn">☾</button>
-      <a class="circle" href="admin-login.html">♙</a>
+    <div class="header-tools">
+      <div class="search-mini"><input placeholder="ابحث عن تطبيق أو لعبة..."><button aria-label="بحث">⌕</button></div>
+      <button class="icon-btn" id="theme" aria-label="تغيير المظهر"></button>
+      <button class="icon-btn" id="loginBtn" aria-label="تسجيل الدخول"></button>
+      <button class="icon-btn menu-btn" id="menu" aria-label="القائمة"></button>
     </div>
   </div>
 </header>
 
-<main class="container">
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-    <p class="eyebrow">مرحباً بك في متجر</p>
-    <h1>ERROR <span>404</span> NOT FOUND</h1>
-    <p class="hero-text">مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
-    <div class="hero-search"><input id="search" placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
-    <div class="quick"><button>الأكثر تحميلاً</button><button>الأحدث</button><button>الألعاب</button><button>التطبيقات</button><button>الأدوات</button></div>
-  </div>
-</section>
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-image"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-copy">
+      <div class="welcome">مرحباً بك في متجر</div>
+      <h1>ERROR <strong>404</strong> NOT FOUND</h1>
+      <p>مكان واحد — جميع تطبيقاتك المفضلة<br>تطبيقات · ألعاب · أدوات · والمزيد</p>
+      <div class="hero-search"><input placeholder="ابحث عن تطبيق أو لعبة..."><button>⌕</button></div>
+      <div class="chips"><button>الأكثر تحميلاً</button><button>الأحدث</button><button>الألعاب</button><button>التطبيقات</button><button>الأدوات</button></div>
+    </div>
+  </section>
 
-<div class="main-grid">
-<section class="apps-section" id="apps">
-  <div class="section-title"><h2>أحدث التطبيقات <span>◷</span></h2><a href="#">عرض الكل ←</a></div>
-  <div class="apps-grid" id="appsGrid"></div>
-</section>
+  <div class="layout">
+    <section class="content">
+      <div class="section-head"><h2>أحدث التطبيقات <span>◷</span></h2><a>عرض الكل ←</a></div>
+      <div class="apps" id="apps"></div>
+    </section>
 
-<aside class="sidebar" id="categories">
-  <div class="side-card">
-    <h3>التصنيفات</h3>
-    <a>🎮 <span>ألعاب</span></a><a>▦ <span>تطبيقات</span></a><a>🔧 <span>أدوات</span></a>
-    <a>◌ <span>تواصل اجتماعي</span></a><a>▶ <span>ترفيه</span></a><a>▣ <span>تعديل الصور</span></a>
-    <a>▤ <span>تعليم</span></a><a>••• <span>أخرى</span></a>
+    <aside class="sidebar">
+      <div class="panel categories">
+        <h3>التصنيفات</h3>
+        <a>🎮 <span>ألعاب</span></a><a>▦ <span>تطبيقات</span></a><a>🔧 <span>أدوات</span></a>
+        <a>◌ <span>تواصل اجتماعي</span></a><a>▶ <span>ترفيه</span></a><a>▣ <span>تعديل الصور</span></a>
+        <a>▤ <span>تعليم</span></a><a>••• <span>أخرى</span></a>
+      </div>
+      <div class="panel featured">
+        <h3>تطبيقات مختارة</h3><p>مجموعة خاصة · مميزة</p><button>استكشف الآن</button>
+      </div>
+      <div class="panel store-stats">
+        <h3>إحصائيات المتجر</h3>
+        <div><b>56</b><span>عدد التطبيقات</span></div>
+        <div><b>1,245,870</b><span>عدد التحميلات</span></div>
+        <div><b>248,632</b><span>عدد الزوار</span></div>
+      </div>
+    </aside>
   </div>
-  <div class="side-card featured">
-    <h3>تطبيقات مختارة</h3><p>مجموعة خاصة · مميزة</p><button>استكشف الآن</button>
-  </div>
-  <div class="side-card stats">
-    <h3>إحصائيات المتجر</h3>
-    <div><b>56</b><small>عدد التطبيقات</small></div>
-    <div><b>1,245,870</b><small>عدد التحميلات</small></div>
-    <div><b>248,632</b><small>عدد الزوار</small></div>
-  </div>
-</aside>
-</div>
 </main>
 
-<footer><div>☠ <b>ERROR 404 NOT FOUND</b><small>All rights reserved © 2026</small></div><div>◉　◉　◉　𝕏</div><div>ليس متجرًا رسميًا لأي من التطبيقات ♥</div></footer>
-<script src="script.js"></script>
+
+<div class="modal" id="authModal" aria-hidden="true">
+  <div class="modal-backdrop" data-close-auth></div>
+  <section class="auth-card" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="modal-close" data-close-auth aria-label="إغلاق">×</button>
+    <div class="auth-icon" id="authIcon"></div>
+    <h2 id="authTitle">تسجيل الدخول</h2>
+    <p class="auth-sub">سجّل الدخول بحساب Google للوصول إلى حسابك.</p>
+    <button class="google-btn" id="googleLogin">
+      <span class="google-mark">G</span>
+      تسجيل الدخول باستخدام Google
+    </button>
+    <div class="auth-status" id="authStatus"></div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div><b>☠ ERROR 404 NOT FOUND</b><small>All rights reserved © 2026</small></div>
+  <div>𝕏　◉　◉　◉</div>
+  <div>ليس متجرًا رسميًا لأي من التطبيقات ♥</div>
+</footer>
+<script type="module" src="script.js"></script>
 </body>
 </html>

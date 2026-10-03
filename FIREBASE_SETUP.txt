@@ -1,0 +1,15 @@
+تم ربط الواجهة بمشروع Firebase:
+Project ID: love-ece13
+Auth Domain: love-ece13.firebaseapp.com
+
+الحساب المحدد للأدمن:
+moreand458@gmail.com
+
+لازم من Firebase Console:
+1) Authentication → Sign-in method → فعّل Google.
+2) Authentication → Settings → Authorized domains → أضف دومين موقعك.
+3) شغّل الموقع ثم جرّب زر تسجيل الدخول.
+
+مهم:
+- Firebase Web API key ليست كلمة مرور سرية، لكن قواعد Firestore/Storage والحماية الفعلية للوحة الأدمن يجب أن تكون على الخادم/قواعد Firebase.
+- النسخة الحالية تجعل البريد المحدد يظهر كحساب Admin في الواجهة؛ حماية لوحة الأدمن الحقيقية بـ Custom Claims/Firestore Rules نضيفها مع لوحة الأدمن.
