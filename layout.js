@@ -1,4 +1,4 @@
-import {$,esc,safeUrl,brandHTML,store,onStore,getPrefs,setPrefs,onUser,login,logout,isAdmin,getProfile,avatar} from "./core.js";
+import {$,esc,safeUrl,brandHTML,store,onStore,getPrefs,setPrefs,onUser,login,logout,isStaff,currentRole,badgeHTML,getProfile,avatar} from "./core.js";
 import {ic,hydrate} from "./icons.js";
 import {initNotifications} from "./notify.js";
 
@@ -35,7 +35,7 @@ export function mountHeader({search=false,page=''}={}){
   if(!u){btn.innerHTML=ic('user');pop.innerHTML='';return}
   const p=await getProfile(u.uid,{name:u.displayName,photoURL:u.photoURL});
   btn.innerHTML=avatar(p);
-  pop.innerHTML=`<div class="pop-head">${avatar(p,'lg')}<div><b>${esc(p.name)}</b><small>${esc(u.email||'')}</small></div></div><a href="profile.html">${ic('user')}ملفي الشخصي</a><a href="settings.html">${ic('gear')}الإعدادات</a>${isAdmin(u)?`<a href="admin.html">${ic('shield')}لوحة الأدمن</a>`:''}<button id="logoutBtn">${ic('logout')}تسجيل الخروج</button>`;
+  pop.innerHTML=`<div class="pop-head">${avatar(p,'lg')}<div><b>${esc(p.name)}</b>${badgeHTML(currentRole)}<small>${esc(u.email||'')}</small></div></div><a href="profile.html">${ic('user')}ملفي الشخصي</a><a href="settings.html">${ic('gear')}الإعدادات</a>${isStaff()?`<a href="admin.html">${ic('shield')}${currentRole==='owner'?'لوحة المالك':'لوحة الأدمن'}</a>`:`<a href="dev.html">${ic('code')}${currentRole==='developer'?'لوحة المطوّر':'كن مطوّرًا'}</a>`}<button id="logoutBtn">${ic('logout')}تسجيل الخروج</button>`;
   $('#logoutBtn').onclick=()=>logout()}
  onUser(u=>{renderUser(u);if(u)closeAuth()});
  document.addEventListener('profilechange',()=>renderUser(window.__user));

@@ -6,7 +6,7 @@ mountHeader({search:true,page:'index'});mountFooter();hydrate();
 $("#heroSearchBtn").innerHTML=ic("search");
 
 const box=$("#apps"),stripsBox=$("#strips");
-let allApps=[],rstats={},shown=24,loaded=false,timer,lastPage=0;
+let allApps=[],rstats=Object.create(null),shown=24,loaded=false,timer,lastPage=0;
 const avg=id=>rstats[id]?rstats[id].sum/rstats[id].n:0;
 const TITLES={all:'كل المحتوى',latest:'الأحدث',popular:'الأكثر تحميلاً',rating:'الأعلى تقييماً',fav:'المفضلة'};
 const pageSize=()=>Math.max(6,Number(store.pageSize)||24);
@@ -75,6 +75,6 @@ onStore(s=>{if(pageSize()!==lastPage){lastPage=pageSize();shown=lastPage}
  $('#heroSec').hidden=s.heroOn===false;$('#statsPanel').hidden=s.statsOn===false;schedule()});
 
 try{onSnapshot(query(collection(db,'apps'),orderBy('createdAt','desc'),limit(150)),snap=>{allApps=snap.docs;loaded=true;schedule()},e=>{console.error(e);loaded=true;schedule()})}catch(e){console.error(e)}
-onSnapshot(collectionGroup(db,'reviews'),snap=>{const m={};snap.forEach(d=>{const r=d.data(),k=r.appId;if(!k)return;m[k]=m[k]||{sum:0,n:0};m[k].sum+=Number(r.rating)||0;m[k].n++});rstats=m;$('#liveReviews').textContent=snap.size;schedule()},()=>{});
+onSnapshot(query(collectionGroup(db,'reviews'),limit(1000)),snap=>{const m=Object.create(null);snap.forEach(d=>{const r=d.data(),k=String(r.appId||'');if(!/^[A-Za-z0-9_-]{5,40}$/.test(k))return;m[k]=m[k]||{sum:0,n:0};m[k].sum+=Number(r.rating)||0;m[k].n++});rstats=m;$('#liveReviews').textContent=snap.size;schedule()},()=>{});
 (async()=>{try{await setDoc(doc(db,'stats','global'),{visitors:increment(1),updatedAt:serverTimestamp()},{merge:true})}catch(e){console.warn('stats',e)}})();
 onSnapshot(doc(db,'stats','global'),snap=>{const s=snap.exists()?snap.data():{};$('#liveVisitors').textContent=Number(s.visitors||0).toLocaleString('en-US')});

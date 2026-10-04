@@ -124,3 +124,53 @@ html{scroll-behavior:smooth}
 .icon-btn{display:grid;place-items:center;padding:0}
 .icon-btn.menu-btn{display:none}
 @media(max-width:680px){.icon-btn.menu-btn{display:grid}}
+
+.hash-box{margin:10px auto 0;max-width:560px;text-align:right;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-size:8px;color:var(--muted);display:flex;flex-direction:column;gap:5px}.hash-box b{color:var(--text);font-size:9px}.hash-box code{direction:ltr;text-align:left;word-break:break-all;font-size:8px;color:var(--cyan)}.hash-box a{color:var(--cyan);text-decoration:none;display:inline-flex;gap:5px;align-items:center}
+.staff-badge{display:inline-flex;align-items:center;gap:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));color:#fff;border-radius:6px;padding:1px 6px;font-size:7px;font-weight:800}.staff-badge .ic{font-size:9px}
+.sec-card h3{font-size:11px;margin:0 0 8px}.sec-list{list-style:none;padding:0;margin:0;font-size:9px;line-height:2;color:var(--muted)}.sec-list li:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:7px}
+.audit-row{display:flex;gap:8px;font-size:8px;border-bottom:1px solid var(--line);padding:6px 0;flex-wrap:wrap}.audit-row b{color:var(--cyan)}.audit-row span{color:var(--muted)}
+
+.staff-badge.owner{background:linear-gradient(90deg,#f5a300,#ffd31a);color:#1a1200}
+.user-pop .pop-head .staff-badge{margin:2px 0}
+.role-badge{display:inline-flex;align-items:center;gap:4px;border-radius:7px;padding:2px 9px;font-size:9px;font-weight:800;background:linear-gradient(90deg,var(--blue),var(--cyan));color:#fff;margin-right:6px}.role-badge.owner{background:linear-gradient(90deg,#f5a300,#ffd31a);color:#1a1200}
+.profile-view #roleSlot{margin:4px 0}.uploader a{color:var(--cyan);text-decoration:none}
+
+/* ===== المطورين / الطلبات ===== */
+.req-plan{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:10px}.req-plan p{white-space:pre-wrap;color:var(--muted);line-height:1.9;margin:4px 0 0}
+.req-rejected{display:flex;gap:10px;border:1px solid #ff456055;background:#ff456010;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:10px}.req-rejected .ic{color:#ff6978;font-size:18px;flex:none}.req-rejected p{margin:3px 0;color:var(--text)}.req-rejected small{color:var(--muted)}
+.sub-item{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px;margin-bottom:8px}.sub-item .thumb{width:44px;height:44px;flex:none}.sub-main{flex:1;min-width:0}.sub-main b{display:block;font-size:10px}.sub-main small,.sub-main p{font-size:8px;margin:2px 0 0;color:var(--muted)}.sub-side{display:flex;gap:6px;align-items:center;flex:none}
+.pill{border-radius:20px;padding:2px 9px;font-size:8px;font-weight:800;border:1px solid var(--line)}.pill.warn{color:#ffb020;border-color:#ffb02066;background:#ffb02012}.pill.ok{color:var(--green);border-color:#2ee59d66;background:#2ee59d12}.pill.bad{color:#ff6978;border-color:#ff697866;background:#ff697812}
+.cnt{display:inline-block;min-width:16px;height:16px;border-radius:9px;background:#ff4560;color:#fff;font:800 8px/16px Cairo;text-align:center;font-style:normal;margin-right:6px;padding:0 4px}.cnt[hidden]{display:none}
+.review-card{border:1px solid var(--line);border-radius:11px;padding:11px;margin-bottom:10px}.rc-head{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.rc-head .thumb{width:46px;height:46px;flex:none}.rc-head b{font-size:11px}.rc-head small{color:var(--muted);font-size:8px;display:block}
+.rc-body{font-size:9px;color:var(--muted);line-height:1.9;white-space:pre-wrap;margin:8px 0}.rc-meta{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.rc-meta span{border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:8px}
+.rc-hash{font-size:8px;direction:ltr;text-align:left;word-break:break-all;color:var(--cyan);margin:4px 0}.rc-shots{display:flex;gap:6px;overflow-x:auto;margin:6px 0}.rc-shots img{height:120px;border-radius:7px;border:1px solid var(--line)}.rc-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+
+/* ===== نماذج مشتركة (المطوّر) ===== */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:7px;padding:8px;font:9px Cairo;outline:none}
+.field.full{grid-column:1/-1}
+.drop{border:1px dashed #0a70c7;border-radius:8px;padding:16px;text-align:center;background:#057cff08}
+.drop input{display:none}
+.drop label{display:block;color:var(--cyan);cursor:pointer;font-size:9px}
+.file-name{display:block;color:var(--muted);font-size:8px;margin-top:5px;word-break:break-word}
+.upload-progress{height:7px;border-radius:99px;background:#ffffff0d;overflow:hidden;margin-top:9px;display:none}
+.upload-progress.show{display:block}
+.upload-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .15s}
+.upload-percent{font-size:8px;color:var(--cyan);margin-top:4px;display:none}
+.upload-percent.show{display:block}
+.notice{padding:9px;border:1px solid var(--line);border-radius:8px;background:#057cff08;color:var(--muted);font-size:8px;line-height:1.8;margin-bottom:10px}
+.icon-pick{display:flex;gap:10px;align-items:center}
+.icon-preview{width:64px;height:64px;border-radius:14px;border:1px dashed #0a70c7;display:grid;place-items:center;overflow:hidden;color:var(--cyan);background:#057cff08;flex:none}
+.icon-preview img{width:100%;height:100%;object-fit:cover}
+.icon-preview .ic{width:26px;height:26px}
+.icon-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.icon-btns .file-name{flex-basis:100%;margin:0}
+.thumb{width:34px;height:34px;border-radius:8px;overflow:hidden;display:grid;place-items:center;background:var(--bg);border:1px solid var(--line)}
+.thumb img,.thumb svg{width:100%;height:100%;object-fit:cover}
+.thumb .code-app-icon{border-radius:0;border:0;gap:0}
+.thumb .code-app-icon svg{width:55%;height:55%}
+.thumb .code-app-icon em{display:none}
+.drop .ic{font-size:13px;margin-left:4px}
+.form-grid{grid-template-columns:1fr 1fr}@media(max-width:560px){.form-grid{grid-template-columns:1fr}}
+.notice{font-size:9px}.drop input[type=file]{display:none}.sub-item .thumb{width:44px;height:44px}.rc-head .thumb{width:46px;height:46px}
+.field select{appearance:none}

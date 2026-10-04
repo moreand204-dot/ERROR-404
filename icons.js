@@ -44,6 +44,7 @@ telegram:'<path d="m21 3-3.2 18-6.7-5-3.5 3.3.6-5.3L3 11.8 21 3Z"/><path d="m8.2
 whatsapp:'<path d="M20 11.7a8 8 0 0 1-11.8 7L4 20l1.3-4A8 8 0 1 1 20 11.7Z"/><path d="M8.4 8.2c.3-.6.6-.6 1-.6h.5c.2 0 .4.1.5.4l.8 1.8c.1.2.1.4-.1.6l-.7.8c.7 1.2 1.6 2 2.8 2.6l.7-.7c.2-.2.4-.2.7-.1l1.7.8c.3.1.4.3.3.6-.2 1-1 1.6-1.9 1.6-2.1 0-5.9-3.1-6.8-5.9-.4-1.1-.2-1.6.5-1.9Z"/>',
 youtube:'<rect x="3" y="6" width="18" height="12" rx="4"/><path d="m10 9 5 3-5 3V9Z"/>',
 send:'<path d="M21 3 3 10l7 3 3 7 8-17Z"/><path d="m10 13 5-5"/>',
+crown:'<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8Z"/><path d="M5 21h14"/>',
 star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3Z"/>',
 bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 21a2 2 0 0 0 4 0"/>',
 gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/>',
@@ -71,9 +72,10 @@ za:'<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#59b
 cc:'<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#f5f5f5"/><path d="M28 25h44v50H28z" fill="#111"/><path d="M38 35h25v8H38zm0 13h25v8H38zm0 13h18v8H38z" fill="#fff"/></svg>'};
 const brandFor=n=>{n=(n||'').toLowerCase();return n.includes('whatsapp')?brand.wa:n.includes('telegram')?brand.tg:n.includes('tiktok')?brand.tt:n.includes('minecraft')?brand.mc:n.includes('zarchiver')?brand.za:n.includes('capcut')?brand.cc:''};
 
+const safeSrc=u=>/^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(String(u))||/^https:\/\//.test(String(u));
 // أيقونة العنصر: صورة مرفوعة > أيقونة ماركة معروفة > أيقونة حسب نوع الملف
 export function tile(a){
-  if(a.iconURL)return `<img src="${esc(a.iconURL)}" alt="" loading="lazy" decoding="async">`;
+  if(a.iconURL&&safeSrc(a.iconURL))return `<img src="${esc(a.iconURL)}" alt="" loading="lazy" decoding="async">`;
   const b=brandFor(a.name);if(b)return b;
   const e=extOf(a);const name=EXT_ICONS[e]||(a.kind==='file'?'file':CATEGORY_ICONS[a.category]||'box');
   return `<div class="code-app-icon">${ic(name)}${e?`<em>${esc(e.slice(0,4))}</em>`:''}</div>`;

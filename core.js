@@ -1,16 +1,20 @@
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js";
+import {ic} from "./icons.js";
 import {getFirestore,initializeFirestore,persistentLocalCache,persistentMultipleTabManager,doc,getDoc,setDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 
 export const firebaseConfig={apiKey:"AIzaSyCypIGW0i3ugYgPLBoQrBm-WolT2Cvkyuo",authDomain:"ourstory-f33db.firebaseapp.com",projectId:"ourstory-f33db",storageBucket:"ourstory-f33db.firebasestorage.app",messagingSenderId:"685629313835",appId:"1:685629313835:web:fb06292932019eabc56b6e",measurementId:"G-9TBR9QFHQR"};
 export const ADMIN_EMAIL="moreand458@gmail.com";
+export const APPCHECK_SITE_KEY=''; // ضع هنا مفتاح reCAPTCHA v3 بعد تفعيل App Check من Firebase Console (اقرأ SECURITY.md)
 export const app=initializeApp(firebaseConfig),auth=getAuth(app);
+if(APPCHECK_SITE_KEY){const m=await import("https://www.gstatic.com/firebasejs/12.3.0/firebase-app-check.js");m.initializeAppCheck(app,{provider:new m.ReCaptchaV3Provider(APPCHECK_SITE_KEY),isTokenAutoRefreshEnabled:true})}
 // كاش محلي دائم: التصفح التاني يفتح فورًا من الجهاز ويتحدّث في الخلفية
 export const db=(()=>{try{return initializeFirestore(app,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})})}catch{return getFirestore(app)}})();
 
 export const $=(s,r=document)=>r.querySelector(s);
 export const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));
 export const safeUrl=u=>{try{const x=new URL(String(u||''),location.href);return /^https?:$/.test(x.protocol)?x.href:''}catch{return ''}};
+export const safeImg=u=>{u=String(u||'');return (/^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+\/=]+$/.test(u)||/^https:\/\/lh3\.googleusercontent\.com\/[\w.\/=:%?&-]*$/.test(u))?u:''};
 export const brandHTML=(name,tag='b')=>{const w=String(name||'').trim().split(/\s+/);const last=w.pop()||'';return `${esc(w.join(' '))}${w.length?' ':''}<${tag}>${esc(last)}</${tag}>`};
 
 /* ===== تفضيلات المستخدم (محلية) ===== */
@@ -29,7 +33,7 @@ export function setPrefs(x){localStorage.prefs=JSON.stringify({...getPrefs(),...
 applyPrefs();matchMedia('(prefers-color-scheme: light)').addEventListener?.('change',applyPrefs);
 
 /* ===== إعدادات المتجر (من الأدمن) ===== */
-export const STORE_DEF={storeName:'ERROR 404',storeSub:'NOT FOUND',welcome:'مرحباً بك في متجر',tagline:'مكان واحد — جميع تطبيقاتك وملفاتك المفضلة',announceOn:false,stripsOn:true,stripCount:8,pageSize:24,heroOn:true,statsOn:true,announceText:'',announceLink:'',reviewsOn:true,defaultSort:'latest',footerText:'ليس متجرًا رسميًا لأي من التطبيقات',telegram:'https://t.me/br_kan242',whatsapp:'https://whatsapp.com/channel/0029VbBbvWcJ3jv1T55BmR0f',youtube:'https://youtube.com/@escanor_soft-1?si=NQXfvUay8ZvzBBzB',contact:'https://t.me/E_S_C_A_10'};
+export const STORE_DEF={storeName:'ERROR 404',storeSub:'NOT FOUND',welcome:'مرحباً بك في متجر',tagline:'مكان واحد — جميع تطبيقاتك وملفاتك المفضلة',adminUid:'',adminUids:[],announceOn:false,stripsOn:true,stripCount:8,pageSize:24,heroOn:true,statsOn:true,announceText:'',announceLink:'',reviewsOn:true,defaultSort:'latest',footerText:'ليس متجرًا رسميًا لأي من التطبيقات',telegram:'https://t.me/br_kan242',whatsapp:'https://whatsapp.com/channel/0029VbBbvWcJ3jv1T55BmR0f',youtube:'https://youtube.com/@escanor_soft-1?si=NQXfvUay8ZvzBBzB',contact:'https://t.me/E_S_C_A_10'};
 export let store={...STORE_DEF};
 const storeCbs=[];let storeStarted=false;
 export function onStore(cb){storeCbs.push(cb);if(storeStarted){cb(store);return}storeStarted=true;
@@ -37,10 +41,17 @@ export function onStore(cb){storeCbs.push(cb);if(storeStarted){cb(store);return}
  onSnapshot(doc(db,'settings','store'),s=>{store={...STORE_DEF,...(s.exists()?s.data():{})};fire()},()=>fire())}
 
 /* ===== المستخدم الحالي ===== */
-export let currentUser=null;const userCbs=[];let authReady=false;
+export let currentUser=null,currentRole=null;const userCbs=[];let authReady=false;
+// الدور: owner (ثابت بالإيميل) | admin (مستند roles/{uid} بيكتبه المالك) | null. للعرض فقط — الصلاحية الحقيقية في قواعد Firestore
+async function fetchRole(u){if(!u)return null;if(u.email===ADMIN_EMAIL&&u.emailVerified)return 'owner';
+ try{const s=await getDoc(doc(db,'roles',u.uid));const r=s.exists()?s.data().role:'';return r==='admin'?'admin':r==='developer'?'developer':null}catch{return null}}
+export const isStaff=()=>currentRole==='owner'||currentRole==='admin';
+export const roleOfUid=uid=>uid&&store.adminUid&&uid===store.adminUid?'owner':(Array.isArray(store.adminUids)&&store.adminUids.includes(uid)?'admin':null);
+export const roleLabel=r=>r==='owner'?'المالك':r==='admin'?'أدمن':r==='developer'?'مطوّر':'';
+export const badgeHTML=r=>r?`<span class="staff-badge ${r}">${ic(r==='owner'?'crown':r==='developer'?'code':'shield')}${roleLabel(r)}</span>`:'';
 onAuthStateChanged(auth,async u=>{currentUser=u;
  if(u){try{await setDoc(doc(db,'users',u.uid),{email:u.email,name:u.displayName||'',photoURL:u.photoURL||'',lastLogin:serverTimestamp()},{merge:true})}catch{}}
- authReady=true;userCbs.forEach(f=>f(u))});
+ currentRole=await fetchRole(u);authReady=true;userCbs.forEach(f=>f(u))});
 export function onUser(cb){userCbs.push(cb);if(authReady)cb(currentUser)}
 export const login=()=>signInWithPopup(auth,new GoogleAuthProvider());
 export const logout=()=>signOut(auth);
@@ -51,12 +62,12 @@ const pcache=new Map();
 export async function getProfile(uid,fb={}){
  if(pcache.has(uid))return pcache.get(uid);let d={};
  try{const s=await getDoc(doc(db,'profiles',uid));if(s.exists())d=s.data()}catch{}
- const p={name:d.name||fb.name||'مستخدم',bio:d.bio||'',photoURL:d.photoURL||fb.photoURL||''};pcache.set(uid,p);return p}
+ const p={name:String(d.name||fb.name||'مستخدم').slice(0,40),bio:String(d.bio||'').slice(0,200),photoURL:safeImg(d.photoURL)||safeImg(fb.photoURL)};pcache.set(uid,p);return p}
 export async function saveProfile(user,{name,bio,photoURL}){
  await setDoc(doc(db,'profiles',user.uid),{name,bio,photoURL,updatedAt:serverTimestamp()});
  try{await setDoc(doc(db,'users',user.uid),{name},{merge:true})}catch{}
  pcache.delete(user.uid);document.dispatchEvent(new Event('profilechange'))}
-export const avatar=(p,cls='')=>p.photoURL?`<span class="avatar ${cls}"><img src="${esc(p.photoURL)}" alt="" referrerpolicy="no-referrer"></span>`:`<span class="avatar ${cls}">${esc((p.name||'?').trim().charAt(0).toUpperCase())}</span>`;
+export const avatar=(p,cls='')=>safeImg(p.photoURL)?`<span class="avatar ${cls}"><img src="${esc(safeImg(p.photoURL))}" alt="" referrerpolicy="no-referrer"></span>`:`<span class="avatar ${cls}">${esc((p.name||'?').trim().charAt(0).toUpperCase())}</span>`;
 
 /* ===== أدوات ===== */
 export function toast(msg,type=''){let h=$('#toasts');if(!h){h=document.createElement('div');h.id='toasts';document.body.append(h)}
